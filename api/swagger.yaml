@@ -1,6 +1,6 @@
 openapi: "3.0.2"
 info:
-  title: API Title
+  title: Chat Dancer
   version: "1.0"
 servers:
   - url: 'https://dancier.net'
@@ -66,11 +66,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
-  /user/{user_id}/new-messages:
+  /user/{user_id}/new-messages-long-polling:
     get:
       summary: |
         Returns a list of new messages. New messages are messages created
-        after the last check for new messages. This endpoint is sued for long polling.
+        after the last check for new messages. This endpoint is used for long polling.
+        It either returns a list of new messages or an empty body after a predefined time.
+      parameters:
+        - $ref: '#/components/parameters/user_id'
+      responses:
+        '200':
+          description: list of new messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/new_messages_list_response'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /user/{user_id}/new-messages-polling:
+    get:
+      summary: |
+        Returns a list of new messages. New messages are messages created
+        after the last check for new messages. This endpoint is used for polling.
         It either returns a list of new messages or an empty body after a predefined time.
       parameters:
         - $ref: '#/components/parameters/user_id'
@@ -114,6 +135,10 @@ components:
           type: string
           description: Id of the chat partner
           example: 321
+        last_activity:
+          type: string
+          format: date-time
+          description: Datetime of the last activity from this chat
     error:
       type: object
       properties:
@@ -140,6 +165,13 @@ components:
           description: The id of the recipient of the message
           example: 321
     chat_list_response:
+      type: object
+      properties:
+        chats:
+          type: array
+          items:
+            $ref: '#/components/schemas/chat'
+    chat:
       allOf:
         - $ref: '#/components/schemas/base_chat'
         - type: object
@@ -177,6 +209,6 @@ components:
                 defines if this message was already loaded to the chat of the recipient. This happens either via long polling for new messages, by fetching all chats for the recipient or by fetching all messages for the specific chat between recipient and author.
             notification_timestamp:
               type: string
-              format: datetime
+              format: date-time
               description: |
                 If set the recipient was notified by email that this messgae was written for him.
