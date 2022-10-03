@@ -92,7 +92,7 @@ paths:
       summary: |
         Returns a list of new messages. New messages are messages created
         after the last check for new messages. This endpoint is used for polling.
-        It either returns a list of new messages or an empty body after a predefined time.
+        It either returns a list of new messages or an empty body immediately.
       parameters:
         - $ref: '#/components/parameters/user_id'
       responses:
