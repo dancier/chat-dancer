@@ -24,7 +24,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
-  /user/{user_id}/chats/{partner_id}:
+  /user/{user_id}/chats/{partner_id}/messages:
     get:
       summary: returns a list of all messages of a chat between users
       parameters:
