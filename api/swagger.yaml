@@ -44,11 +44,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
+  /chats/{chat_id}:
+    get:
+      summary: returns a chat
+      parameters:
+        - $ref: '#/components/parameters/chat_id'
+      responses:
+        '200':
+          description: "data of a chat"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/detailed_chat'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
   /chats/{chat_id}/messages:
     get:
       summary: returns messages for a chat
       parameters:
         - $ref: '#/components/parameters/chat_id'
+        - $ref: '#/components/parameters/last_message_id'
       responses:
         '200':
           description: "detailed data of a chat"
@@ -136,6 +155,12 @@ components:
       required: true
       schema:
         type: string
+    last_message_id:
+      name: last_message_id
+      in: query
+      description: Id of the last message already received. If set, the endpoint only returns newer messages
+      schema:
+        type: string
   schemas:
     chat_list_response:
       type: object
@@ -211,6 +236,10 @@ components:
         - $ref: '#/components/schemas/base_message'
         - type: object
           properties:
+            id:
+              type: string
+              description: id of the message
+              example: 1234
             is_read:
               type: boolean
               example: true
