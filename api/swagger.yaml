@@ -10,7 +10,7 @@ paths:
     get:
       parameters:
         - $ref: '#/components/parameters/user_id'
-      summary: returns a list of all chats of a user. The list endpoint does only return the latest message, the messages array will only be filled on fecthing messages for a chat
+      summary: returns a list of all chats of a user. The list endpoint does only return the latest message, the messages array will only be filled on fetching messages for a chat
       responses:
         '200':
           description: "list of chats for a user"
@@ -78,7 +78,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
-  /users/{user_id}/new-messages-long-polling:
+  /new-messages-long-polling:
     get:
       summary: |
         Returns a list of new messages. New messages are messages created
@@ -99,7 +99,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
-  /users/{user_id}/new-messages-polling:
+  /new-messages-polling:
     get:
       summary: |
         Returns a list of new messages. New messages are messages created
@@ -221,11 +221,15 @@ components:
               example: false
               description: |
                 defines if this message was already loaded to the chat of the recipient. This happens either via long polling for new messages, by fetching all chats for the recipient or by fetching all messages for the specific chat between recipient and author.
-            notification_timestamp:
+            recipients_notified:
+              type: boolean
+              description: |
+                If set to true the recipient was notified by email that this messgae was written for him.
+            creation_timestamp:
               type: string
               format: date-time
               description: |
-                If set the recipient was notified by email that this messgae was written for him.
+                Timestamp of message creation, used for sorting messages
     base_message:
       type: object
       properties:
