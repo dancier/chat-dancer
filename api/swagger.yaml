@@ -49,6 +49,7 @@ paths:
       summary: returns a chat
       parameters:
         - $ref: '#/components/parameters/chat_id'
+        - $ref: '#/components/parameters/user_id'
       responses:
         '200':
           description: "data of a chat"
@@ -68,6 +69,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/chat_id'
         - $ref: '#/components/parameters/last_message_id'
+        - $ref: '#/components/parameters/user_id'
       responses:
         '200':
           description: "detailed data of a chat"
@@ -83,6 +85,8 @@ paths:
                 $ref: '#/components/schemas/error'
     post:
       summary: Creates a new message
+      parameters:
+        - $ref: '#/components/parameters/chat_id'
       requestBody:
         content:
           application/json:
