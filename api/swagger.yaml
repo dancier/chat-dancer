@@ -10,7 +10,7 @@ paths:
     get:
       parameters:
         - $ref: '#/components/parameters/user_id'
-      summary: returns a list of all chats of a user. The list endpoint does only return the latest message, the messages array will only be filled on fetching messages for a chat
+      summary: returns a list of all chats of a user. This endpoint does only return the latest message, the messages array will only be filled on fetching messages for a chat or fetching a single chat
       responses:
         '200':
           description: "list of chats for a user"
@@ -18,6 +18,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/chat_list_response'
+              example:
+                - chat_id: 543
+                  user_ids: [123, 234]
+                  last_activity: "2022-10-10T18:29:48.843Z"
+                  type: "group"
+                  messages: []
+                  last_message:
+                    text: Lorem ipsum
+                    author: 123
+                    id: 1234
+                    read_by_users: [123]
+                    notified_users: [123]
+                    creation_timestamp: "2022-10-10T18:29:48.843Z"
         default:
           description: Unexpected error
           content:
@@ -38,6 +51,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/chat_response'
+              example:
+                chat_id: 543
+                user_ids: [123, 234]
+                last_activity: null
+                type: "group"
+                messages: []
+                last_message: null
+          headers:
+            location:
+              schema:
+                type: string
+                example: https://chat-dancier.net/chats/123
+              description: The location of the created resource.
         default:
           description: Unexpected error
           content:
@@ -49,7 +75,6 @@ paths:
       summary: returns a chat
       parameters:
         - $ref: '#/components/parameters/chat_id'
-        - $ref: '#/components/parameters/user_id'
       responses:
         '200':
           description: "data of a chat"
@@ -69,7 +94,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/chat_id'
         - $ref: '#/components/parameters/last_message_id'
-        - $ref: '#/components/parameters/user_id'
       responses:
         '200':
           description: "detailed data of a chat"
@@ -244,20 +268,20 @@ components:
               type: string
               description: id of the message
               example: 1234
-            is_read:
-              type: boolean
-              example: true
+            read_by_users:
+              type: array
               description: |
-                Defines if the recipient has already read the message
-            is_new:
-              type: boolean
-              example: false
-              description: |
-                defines if this message was already loaded to the chat of the recipient. This happens either via long polling for new messages, by fetching all chats for the recipient or by fetching all messages for the specific chat between recipient and author.
-            recipients_notified:
-              type: boolean
+                User ids of users that already have read the message
+              items:
+                type: string
+                example: 123
+            notified_users:
+              type: array
               description: |
                 If set to true the recipient was notified by email that this messgae was written for him.
+              items:
+                type: string
+                example: 123
             creation_timestamp:
               type: string
               format: date-time
