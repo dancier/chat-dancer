@@ -1,0 +1,310 @@
+openapi: "3.0.2"
+info:
+  title: Chat Dancer
+  version: "1.0"
+servers:
+  - url: 'https://chat-dancier.net'
+  - url: 'http://localhost:8080'
+paths:
+  /chats:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/user_id'
+      summary: returns a list of all chats of a user. This endpoint does only return the latest message, the messages array will only be filled on fetching messages for a chat or fetching a single chat
+      responses:
+        '200':
+          description: "list of chats for a user"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/chat_list_response'
+              example:
+                - chat_id: 543
+                  user_ids: [123, 234]
+                  last_activity: "2022-10-10T18:29:48.843Z"
+                  type: "group"
+                  messages: []
+                  last_message:
+                    text: Lorem ipsum
+                    author: 123
+                    id: 1234
+                    read_by_users: [123]
+                    notified_users: [123]
+                    creation_timestamp: "2022-10-10T18:29:48.843Z"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    post:
+      summary: Creates a new chat group
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/chat_creation'
+      responses:
+        '201':
+          description: "chat created"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/chat_response'
+              example:
+                chat_id: 543
+                user_ids: [123, 234]
+                last_activity: null
+                type: "group"
+                messages: []
+                last_message: null
+          headers:
+            location:
+              schema:
+                type: string
+                example: https://chat-dancier.net/chats/123
+              description: The location of the created resource.
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /chats/{chat_id}:
+    get:
+      summary: returns a chat
+      parameters:
+        - $ref: '#/components/parameters/chat_id'
+      responses:
+        '200':
+          description: "data of a chat"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/detailed_chat'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /chats/{chat_id}/messages:
+    get:
+      summary: returns messages for a chat
+      parameters:
+        - $ref: '#/components/parameters/chat_id'
+        - $ref: '#/components/parameters/last_message_id'
+      responses:
+        '200':
+          description: "detailed data of a chat"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/message_list_response'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    post:
+      summary: Creates a new message
+      parameters:
+        - $ref: '#/components/parameters/chat_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/base_message'
+      responses:
+        '201':
+          description: "message created"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /new-messages-long-polling:
+    get:
+      summary: |
+        Returns a list of new messages. New messages are messages created
+        after the last check for new messages. This endpoint is used for long polling.
+        It either returns a list of new messages or an empty body after a predefined time.
+      parameters:
+        - $ref: '#/components/parameters/user_id'
+      responses:
+        '200':
+          description: list of new messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/new_message_list_response'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+  /new-messages-polling:
+    get:
+      summary: |
+        Returns a list of new messages. New messages are messages created
+        after the last check for new messages. This endpoint is used for polling.
+        It either returns a list of new messages or an empty body immediately.
+      parameters:
+        - $ref: '#/components/parameters/user_id'
+      responses:
+        '200':
+          description: list of new messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/new_message_list_response'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+components:
+  parameters:
+    user_id:
+      name: user_id
+      in: query
+      description: User ID
+      required: true
+      schema:
+        type: string
+    chat_id:
+      name: chat_id
+      in: path
+      description: Chat ID
+      required: true
+      schema:
+        type: string
+    last_message_id:
+      name: last_message_id
+      in: query
+      description: Id of the last message already received. If set, the endpoint only returns newer messages
+      schema:
+        type: string
+  schemas:
+    chat_list_response:
+      type: object
+      properties:
+        chats:
+          type: array
+          items:
+            $ref: '#/components/schemas/detailed_chat'
+    chat_creation:
+      type: object
+      properties:
+        user_ids:
+          type: array
+          items:
+            type: string
+          example: [ 123, 321 ]
+        type:
+          $ref: '#/components/schemas/chat_type'
+    chat_response:
+      $ref: '#/components/schemas/detailed_chat'
+    detailed_chat:
+      allOf:
+        - $ref: '#/components/schemas/base_chat'
+        - $ref: '#/components/schemas/message_list_response'
+        - type: object
+          properties:
+            last_message:
+              $ref: '#/components/schemas/message'
+    base_chat:
+      properties:
+        chat_id:
+          type: string
+          example: 543
+        user_ids:
+          type: array
+          description: Ids of the users participating in the chat
+          items:
+            type: string
+          example: [ 123, 321 ]
+        last_activity:
+          type: string
+          format: date-time
+          description: Datetime of the last activity from this chat
+        type:
+          $ref: '#/components/schemas/chat_type'
+    chat_type:
+      type: string
+      enum:
+        - group
+        - direct
+    new_message_list_response:
+      type: object
+      properties:
+        new_messages:
+          type: array
+          items:
+            allOf:
+              - type: object
+                properties:
+                  chat_id:
+                    type: string
+                    example: 123
+              - $ref: '#/components/schemas/message_list_response'
+    message_list_response:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/message'
+    message:
+      allOf:
+        - $ref: '#/components/schemas/base_message'
+        - type: object
+          properties:
+            id:
+              type: string
+              description: id of the message
+              example: 1234
+            read_by_users:
+              type: array
+              description: |
+                User ids of users that already have read the message
+              items:
+                type: string
+                example: 123
+            notified_users:
+              type: array
+              description: |
+                If set to true the recipient was notified by email that this messgae was written for him.
+              items:
+                type: string
+                example: 123
+            creation_timestamp:
+              type: string
+              format: date-time
+              description: |
+                Timestamp of message creation, used for sorting messages
+    base_message:
+      type: object
+      properties:
+        text:
+          type: string
+          description: The content of the message
+          example: Lorem ipsum
+        author:
+          type: string
+          description: The id of the author of the message
+          example: 123
+    error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
