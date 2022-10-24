@@ -24,9 +24,17 @@ hs_err_pid*
 
 # Intellij
 .idea
+*.iws
+*.iml
+*.ipr
 
 # Mac
 .DS_Store
 
-# gradle
-.gradle
+# Maven
+
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**
+!**/src/test/**
