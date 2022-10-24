@@ -11,6 +11,7 @@ public class Participants {
     private final long last_received_message_id;
     private final Timestamp created_at;
 
+
     public Participants(long id, long user_id, long chat_id, long last_read_message_id, long notified_for_message_id, long last_received_message_id, Timestamp created_at) {
         this.id = id;
         this.user_id = user_id;
