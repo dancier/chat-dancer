@@ -1,0 +1,5 @@
+net/dancer/chatdancer/Chat.class
+net/dancer/chatdancer/Message.class
+net/dancer/chatdancer/ChatController.class
+net/dancer/chatdancer/ChatDancerApplication.class
+net/dancer/chatdancer/Participants.class
