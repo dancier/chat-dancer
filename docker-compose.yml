@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  dancer-db:
+    image: postgres:14
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: chat-dancer
+      POSTGRES_PASSWORD: chat-dancer
+      POSTGRES_DB: chat-dancer
+    volumes:
+      - ./volumes/dancer-data:/var/lib/postgresql/data
+
+  pg-admin:
+    image: dpage/pgadmin4:latest
+    restart: always
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@dancier.net
+      PGADMIN_DEFAULT_PASSWORD: secret
+    volumes:
+      - ./volumes/pg-admin-data:/var/lib/pgadmin
