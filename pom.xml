@@ -30,6 +30,8 @@
 	</dependencies>
 
 	<build>
+		<finalName>chat-dancer</finalName>
+
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
