@@ -1,9 +1,9 @@
 package net.dancier.chatdancer.services;
 
 import lombok.RequiredArgsConstructor;
+import net.dancier.chatdancer.dao.ChatDaoInMemory;
 import net.dancier.chatdancer.models.Chat;
-import net.dancier.chatdancer.ChatDao;
-import net.dancier.chatdancer.ChatDaoInMemory;
+import net.dancier.chatdancer.models.Message;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,17 +13,29 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ChatService {
 
- private final ChatDaoInMemory chatDaoInMemory;
+    private final ChatDaoInMemory chatDaoInMemory;
 
- public Chat createNewChat(Chat chat) {
+    public Chat createNewChat(Chat chat) {
 
-           return chatDaoInMemory.createNewChatByParticipants(chat);
- };
+        return chatDaoInMemory.createNewChatByParticipants(chat);
+    }
 
 
-public List<Chat> getAllChatsForUser (UUID id) {
+    public List<Chat> getAllChatsForUser(UUID id) {
 
-    return chatDaoInMemory.getAllChatsForUser(id);
-}
+        return chatDaoInMemory.getAllChatsForUser(id);
+    }
+
+    public Chat getChatById(UUID chatId) {
+        return chatDaoInMemory.getChatById(chatId);
+    }
+
+    public List<Message> getAllMessagesForChat(UUID chatId) {
+        return chatDaoInMemory.getAllMessagesForChat(chatId);
+    }
+
+    public Message createMessageForChat(Message message, UUID chatId) {
+        return chatDaoInMemory.createNewMessageForChat(message, chatId);
+    }
 
 }
