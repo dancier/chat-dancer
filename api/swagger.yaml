@@ -9,7 +9,7 @@ paths:
   /chats:
     get:
       parameters:
-        - $ref: '#/components/parameters/user_id'
+        - $ref: '#/components/parameters/dancerId'
       summary: returns a list of all chats of a user. This endpoint does only return the latest message, the messages array will only be filled on fetching messages for a chat or fetching a single chat
       responses:
         '200':
@@ -19,18 +19,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/chat_list_response'
               example:
-                - chat_id: 543
-                  user_ids: [123, 234]
-                  last_activity: "2022-10-10T18:29:48.843Z"
+                - chatId: 543
+                  dancerIds: [123, 234]
+                  lastActivity: "2022-10-10T18:29:48.843Z"
                   type: "group"
                   messages: []
-                  last_message:
+                  lastMessage:
                     text: Lorem ipsum
                     author: 123
                     id: 1234
-                    read_by_users: [123]
-                    notified_users: [123]
-                    creation_timestamp: "2022-10-10T18:29:48.843Z"
+                    readByDancers: [123]
+                    notifiedUsers: [123]
+                    creationTimestamp: "2022-10-10T18:29:48.843Z"
         default:
           description: Unexpected error
           content:
@@ -52,12 +52,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/chat_response'
               example:
-                chat_id: 543
-                user_ids: [123, 234]
-                last_activity: null
+                chatId: 543
+                dancerIds: [123, 234]
+                lastActivity: null
                 type: "group"
                 messages: []
-                last_message: null
+                lastMessage: null
           headers:
             location:
               schema:
@@ -70,11 +70,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
-  /chats/{chat_id}:
+  /chats/{chatId}:
     get:
       summary: returns a chat
       parameters:
-        - $ref: '#/components/parameters/chat_id'
+        - $ref: '#/components/parameters/chatId'
       responses:
         '200':
           description: "data of a chat"
@@ -88,12 +88,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
-  /chats/{chat_id}/messages:
+  /chats/{chatId}/messages:
     get:
       summary: returns messages for a chat
       parameters:
-        - $ref: '#/components/parameters/chat_id'
-        - $ref: '#/components/parameters/last_message_id'
+        - $ref: '#/components/parameters/chatId'
+        - $ref: '#/components/parameters/lastMessageId'
       responses:
         '200':
           description: "detailed data of a chat"
@@ -110,7 +110,7 @@ paths:
     post:
       summary: Creates a new message
       parameters:
-        - $ref: '#/components/parameters/chat_id'
+        - $ref: '#/components/parameters/chatId'
       requestBody:
         content:
           application/json:
@@ -132,7 +132,7 @@ paths:
         after the last check for new messages. This endpoint is used for long polling.
         It either returns a list of new messages or an empty body after a predefined time.
       parameters:
-        - $ref: '#/components/parameters/user_id'
+        - $ref: '#/components/parameters/dancerId'
       responses:
         '200':
           description: list of new messages
@@ -153,7 +153,7 @@ paths:
         after the last check for new messages. This endpoint is used for polling.
         It either returns a list of new messages or an empty body immediately.
       parameters:
-        - $ref: '#/components/parameters/user_id'
+        - $ref: '#/components/parameters/dancerId'
       responses:
         '200':
           description: list of new messages
@@ -169,22 +169,22 @@ paths:
                 $ref: '#/components/schemas/error'
 components:
   parameters:
-    user_id:
-      name: user_id
+    dancerId:
+      name: dancerId
       in: query
-      description: User ID
+      description: Dancer ID
       required: true
       schema:
         type: string
-    chat_id:
-      name: chat_id
+    chatId:
+      name: chatId
       in: path
       description: Chat ID
       required: true
       schema:
         type: string
-    last_message_id:
-      name: last_message_id
+    lastMessageId:
+      name: lastMessageId
       in: query
       description: Id of the last message already received. If set, the endpoint only returns newer messages
       schema:
@@ -200,7 +200,7 @@ components:
     chat_creation:
       type: object
       properties:
-        user_ids:
+        userIds:
           type: array
           items:
             type: string
@@ -215,20 +215,20 @@ components:
         - $ref: '#/components/schemas/message_list_response'
         - type: object
           properties:
-            last_message:
+            lastMessage:
               $ref: '#/components/schemas/message'
     base_chat:
       properties:
-        chat_id:
+        chatId:
           type: string
           example: 543
-        user_ids:
+        dancerIds:
           type: array
-          description: Ids of the users participating in the chat
+          description: Ids of the dancers participating in the chat
           items:
             type: string
           example: [ 123, 321 ]
-        last_activity:
+        lastActivity:
           type: string
           format: date-time
           description: Datetime of the last activity from this chat
@@ -248,7 +248,7 @@ components:
             allOf:
               - type: object
                 properties:
-                  chat_id:
+                  chatId:
                     type: string
                     example: 123
               - $ref: '#/components/schemas/message_list_response'
@@ -268,21 +268,21 @@ components:
               type: string
               description: id of the message
               example: 1234
-            read_by_users:
+            readByUsers:
               type: array
               description: |
-                User ids of users that already have read the message
+                Ids of dancers that already have read the message
               items:
                 type: string
                 example: 123
-            notified_users:
+            notifiedUsers:
               type: array
               description: |
                 If set to true the recipient was notified by email that this messgae was written for him.
               items:
                 type: string
                 example: 123
-            creation_timestamp:
+            creationTimestamp:
               type: string
               format: date-time
               description: |
