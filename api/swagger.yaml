@@ -17,13 +17,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/chat_list_response'
+                $ref: '#/components/schemas/chatListResponse'
               example:
                 - chatId: 543
                   dancerIds: [123, 234]
                   lastActivity: "2022-10-10T18:29:48.843Z"
                   type: "group"
-                  messages: []
                   lastMessage:
                     text: Lorem ipsum
                     author: 123
@@ -43,20 +42,19 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/chat_creation'
+              $ref: '#/components/schemas/chatCreation'
       responses:
         '201':
           description: "chat created"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/chat_response'
+                $ref: '#/components/schemas/chatResponse'
               example:
                 chatId: 543
                 dancerIds: [123, 234]
                 lastActivity: null
                 type: "group"
-                messages: []
                 lastMessage: null
           headers:
             location:
@@ -77,11 +75,11 @@ paths:
         - $ref: '#/components/parameters/chatId'
       responses:
         '200':
-          description: "data of a chat"
+          description: "Metadata of a chat"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/detailed_chat'
+                $ref: '#/components/schemas/detailedChat'
         default:
           description: Unexpected error
           content:
@@ -100,7 +98,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/message_list_response'
+                $ref: '#/components/schemas/messageListResponse'
         default:
           description: Unexpected error
           content:
@@ -139,7 +137,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/new_message_list_response'
+                $ref: '#/components/schemas/newMessageListResponse'
         default:
           description: Unexpected error
           content:
@@ -160,7 +158,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/new_message_list_response'
+                $ref: '#/components/schemas/newMessageListResponse'
         default:
           description: Unexpected error
           content:
@@ -190,14 +188,14 @@ components:
       schema:
         type: string
   schemas:
-    chat_list_response:
+    chatListResponse:
       type: object
       properties:
         chats:
           type: array
           items:
-            $ref: '#/components/schemas/detailed_chat'
-    chat_creation:
+            $ref: '#/components/schemas/detailedChat'
+    chatCreation:
       type: object
       properties:
         userIds:
@@ -206,18 +204,17 @@ components:
             type: string
           example: [ 123, 321 ]
         type:
-          $ref: '#/components/schemas/chat_type'
-    chat_response:
-      $ref: '#/components/schemas/detailed_chat'
-    detailed_chat:
+          $ref: '#/components/schemas/chatType'
+    chatResponse:
+      $ref: '#/components/schemas/detailedChat'
+    detailedChat:
       allOf:
-        - $ref: '#/components/schemas/base_chat'
-        - $ref: '#/components/schemas/message_list_response'
+        - $ref: '#/components/schemas/baseChat'
         - type: object
           properties:
             lastMessage:
               $ref: '#/components/schemas/message'
-    base_chat:
+    baseChat:
       properties:
         chatId:
           type: string
@@ -233,13 +230,13 @@ components:
           format: date-time
           description: Datetime of the last activity from this chat
         type:
-          $ref: '#/components/schemas/chat_type'
-    chat_type:
+          $ref: '#/components/schemas/chatType'
+    chatType:
       type: string
       enum:
         - group
         - direct
-    new_message_list_response:
+    newMessageListResponse:
       type: object
       properties:
         new_messages:
@@ -251,8 +248,8 @@ components:
                   chatId:
                     type: string
                     example: 123
-              - $ref: '#/components/schemas/message_list_response'
-    message_list_response:
+              - $ref: '#/components/schemas/messageListResponse'
+    messageListResponse:
       type: object
       properties:
         messages:
