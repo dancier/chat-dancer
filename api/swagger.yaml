@@ -10,10 +10,10 @@ paths:
     get:
       parameters:
         - $ref: '#/components/parameters/dancerId'
-      summary: returns a list of all chats of a user. This endpoint does only return the latest message, the messages array will only be filled on fetching messages for a chat or fetching a single chat
+      summary: returns a list of all chats of a dancer. This endpoint does only return the latest message, the messages array will only be filled on fetching messages for a chat or fetching a single chat
       responses:
         '200':
-          description: "list of chats for a user"
+          description: "list of chats for a dancer"
           content:
             application/json:
               schema:
@@ -28,7 +28,7 @@ paths:
                     author: 123
                     id: 1234
                     readByDancers: [123]
-                    notifiedUsers: [123]
+                    notifiedDancers: [123]
                     creationTimestamp: "2022-10-10T18:29:48.843Z"
         default:
           description: Unexpected error
@@ -113,7 +113,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/base_message'
+              $ref: '#/components/schemas/baseMessage'
       responses:
         '201':
           description: "message created"
@@ -198,7 +198,7 @@ components:
     chatCreation:
       type: object
       properties:
-        userIds:
+        dancerIds:
           type: array
           items:
             type: string
@@ -258,21 +258,21 @@ components:
             $ref: '#/components/schemas/message'
     message:
       allOf:
-        - $ref: '#/components/schemas/base_message'
+        - $ref: '#/components/schemas/baseMessage'
         - type: object
           properties:
             id:
               type: string
               description: id of the message
               example: 1234
-            readByUsers:
+            readByDancers:
               type: array
               description: |
                 Ids of dancers that already have read the message
               items:
                 type: string
                 example: 123
-            notifiedUsers:
+            notifiedDancers:
               type: array
               description: |
                 If set to true the recipient was notified by email that this messgae was written for him.
@@ -284,7 +284,7 @@ components:
               format: date-time
               description: |
                 Timestamp of message creation, used for sorting messages
-    base_message:
+    baseMessage:
       type: object
       properties:
         text:
