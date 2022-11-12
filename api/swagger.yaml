@@ -28,7 +28,6 @@ paths:
                     author: 123
                     id: 1234
                     readByDancers: [123]
-                    notifiedDancers: [123]
                     creationTimestamp: "2022-10-10T18:29:48.843Z"
         default:
           description: Unexpected error
@@ -269,13 +268,6 @@ components:
               type: array
               description: |
                 Ids of dancers that already have read the message
-              items:
-                type: string
-                example: 123
-            notifiedDancers:
-              type: array
-              description: |
-                If set to true the recipient was notified by email that this messgae was written for him.
               items:
                 type: string
                 example: 123
