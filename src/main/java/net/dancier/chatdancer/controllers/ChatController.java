@@ -25,8 +25,8 @@ public class ChatController {
     private final ChatService chatService;
 
     @GetMapping
-    public ResponseEntity<List<Chat>> getAllChats(@RequestParam UUID userId) {
-        return new ResponseEntity<>(chatService.getAllChatsForUser(userId), HttpStatus.OK);
+    public ResponseEntity<List<Chat>> getAllChats(@RequestParam UUID dancerId) {
+        return new ResponseEntity<>(chatService.getAllChatsForUser(dancerId), HttpStatus.OK);
     }
 
     @GetMapping("/{chatId}")
@@ -82,7 +82,7 @@ public class ChatController {
     private Chat convertDtoToChat(CreateNewChatRequestDTO createNewChatRequestDTO) {
 
         return Chat.builder()
-                .chatType(createNewChatRequestDTO.getChatType())
+                .chatType(createNewChatRequestDTO.getType())
                 .dancersIds(createNewChatRequestDTO.getDancerIds())
                 .build();
 

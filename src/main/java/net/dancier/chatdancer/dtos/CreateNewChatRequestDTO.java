@@ -10,5 +10,5 @@ import java.util.UUID;
 public class CreateNewChatRequestDTO {
 
      private List<UUID> dancerIds;
-     private ChatType chatType;
+     private ChatType type;
 }
