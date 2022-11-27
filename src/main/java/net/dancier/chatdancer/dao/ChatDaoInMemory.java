@@ -9,18 +9,21 @@ import java.util.*;
 
 @Component
 public class ChatDaoInMemory implements ChatDao {
-    List<Chat> myChats = new LinkedList<>();
+
+    List<Message> testMessageList = new ArrayList<>();
+    UUID testChatUUID = UUID.fromString("ae30938e-8d5c-4d18-960e-214be61cf83a");
+    List<Chat> myChats = new LinkedList<>(List.of(Chat.builder().chatId(testChatUUID).messages(testMessageList).build()));
 
     @Override
     public Chat createNewChatByParticipants(Chat chat) {
         UUID chatId = UUID.randomUUID();
-        myChats.add(Chat.builder().chatId(chatId).messages(new ArrayList<>()).chatType(chat.getChatType()).dancersIds(chat.getDancersIds()).build());
+        myChats.add(Chat.builder().chatId(chatId).messages(new ArrayList<>()).type(chat.getType()).dancersIds(chat.getDancersIds()).creationTimestamp(new Timestamp(System.currentTimeMillis())).build());
         return myChats.get(myChats.size() - 1);
 
     }
 
     @Override
-    public List<Chat> getAllChatsForUser(UUID id) {
+    public List<Chat> getAllChatsForDancer(UUID id) {
 
         List<Chat> usersChats = new ArrayList<>();
 

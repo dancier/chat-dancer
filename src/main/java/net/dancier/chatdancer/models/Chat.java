@@ -15,9 +15,10 @@ public class Chat {
     private List<UUID> dancersIds;
     @Nullable
     private Timestamp lastActivity;
-    private ChatType chatType;
+    private ChatType type;
     @Nullable
     private Message lastMessage;
-    private List<net.dancier.chatdancer.models.Message> messages;
+    private List<Message> messages;
+    private Timestamp creationTimestamp;
 
 }

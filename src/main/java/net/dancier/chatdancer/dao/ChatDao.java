@@ -10,7 +10,7 @@ public interface ChatDao {
 
     Chat createNewChatByParticipants(Chat chat);
 
-    List<Chat> getAllChatsForUser(UUID id);
+    List<Chat> getAllChatsForDancer(UUID id);
 
     Chat getChatById(UUID chatId);
 

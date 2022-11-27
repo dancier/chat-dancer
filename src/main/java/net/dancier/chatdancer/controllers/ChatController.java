@@ -1,9 +1,9 @@
 package net.dancier.chatdancer.controllers;
 
 import lombok.RequiredArgsConstructor;
-import net.dancier.chatdancer.dtos.ChatResponseDTO;
-import net.dancier.chatdancer.dtos.CreateMessageDTO;
-import net.dancier.chatdancer.dtos.CreateNewChatRequestDTO;
+import net.dancier.chatdancer.dtos.ChatResponseDto;
+import net.dancier.chatdancer.dtos.CreateMessageDto;
+import net.dancier.chatdancer.dtos.CreateNewChatRequestDto;
 import net.dancier.chatdancer.models.Chat;
 import net.dancier.chatdancer.models.Message;
 import net.dancier.chatdancer.services.ChatService;
@@ -21,16 +21,20 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ChatController {
 
-    public static Logger log = LoggerFactory.getLogger(ChatController.class);
+    public static final Logger log = LoggerFactory.getLogger(ChatController.class);
     private final ChatService chatService;
 
     @GetMapping
-    public ResponseEntity<List<Chat>> getAllChats(@RequestParam UUID dancerId) {
-        return new ResponseEntity<>(chatService.getAllChatsForUser(dancerId), HttpStatus.OK);
+    public ResponseEntity<List<ChatResponseDto>> getAllChats(@RequestParam UUID dancerId) {
+
+        List<Chat> allChatsForDancer = chatService.getAllChatsForDancer(dancerId);
+        List<ChatResponseDto> chatResponseDtoList = allChatsForDancer.stream().map(this::convertChatToDto).toList();
+
+        return new ResponseEntity<>(chatResponseDtoList, HttpStatus.OK);
     }
 
     @GetMapping("/{chatId}")
-    public ResponseEntity<ChatResponseDTO> getChatById(@PathVariable UUID chatId) {
+    public ResponseEntity<ChatResponseDto> getChatById(@PathVariable UUID chatId) {
 
         Chat requestedChat = chatService.getChatById(chatId);
 
@@ -42,16 +46,16 @@ public class ChatController {
 
         return new ResponseEntity<>(chatService.getAllMessagesForChat(chatId), HttpStatus.OK);
     }
-    
+
     @PostMapping
-    public ResponseEntity<ChatResponseDTO> createNewChat(@RequestBody CreateNewChatRequestDTO createNewChatRequestDTO) {
+    public ResponseEntity<ChatResponseDto> createNewChat(@RequestBody CreateNewChatRequestDto createNewChatRequestDTO) {
         Chat chat = convertDtoToChat(createNewChatRequestDTO);
 
         Chat createdChat = chatService.createNewChat(chat);
 
-        ChatResponseDTO chatResponseDTO = convertChatToDto(createdChat);
+        ChatResponseDto chatResponseDTO = convertChatToDto(createdChat);
 
-        log.info("Creating Chat: " + chatResponseDTO);
+        log.info("Created Chat: " + chatResponseDTO);
 
         return new ResponseEntity<>(chatResponseDTO, HttpStatus.CREATED);
 
@@ -59,30 +63,30 @@ public class ChatController {
     }
 
     @PostMapping("/{chatId}/messages")
-    ResponseEntity<Message> createNewMessage(@PathVariable UUID chatId, @RequestBody CreateMessageDTO createMessageDTO) {
+    ResponseEntity<Message> createNewMessage(@PathVariable UUID chatId, @RequestBody CreateMessageDto createMessageDto) {
 
-        Message newMessage = Message.builder().text(createMessageDTO.getText()).authorId(createMessageDTO.getAuthorId()).build();
+        Message newMessage = Message.builder().text(createMessageDto.getText()).authorId(createMessageDto.getAuthorId()).build();
 
-        return new ResponseEntity<>(chatService.createMessageForChat(newMessage, chatId), HttpStatus.OK);
+        return new ResponseEntity<>(chatService.createMessageForChat(newMessage, chatId), HttpStatus.CREATED);
 
     }
 
-    private ChatResponseDTO convertChatToDto(Chat chat) {
+    private ChatResponseDto convertChatToDto(Chat chat) {
 
-        return ChatResponseDTO.builder()
-                .chatID(chat.getChatId())
-                .chatType(chat.getChatType())
+        return ChatResponseDto.builder()
+                .chatId(chat.getChatId())
                 .dancerIds(chat.getDancersIds())
-                .messages(chat.getMessages())
+                .lastActivity(chat.getLastActivity())
+                .type(chat.getType())
                 .lastMessage(chat.getLastMessage())
                 .build();
 
     }
 
-    private Chat convertDtoToChat(CreateNewChatRequestDTO createNewChatRequestDTO) {
+    private Chat convertDtoToChat(CreateNewChatRequestDto createNewChatRequestDTO) {
 
         return Chat.builder()
-                .chatType(createNewChatRequestDTO.getType())
+                .type(createNewChatRequestDTO.getType())
                 .dancersIds(createNewChatRequestDTO.getDancerIds())
                 .build();
 

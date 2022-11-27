@@ -1,17 +1,15 @@
 package net.dancier.chatdancer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.dancier.chatdancer.dao.ChatDao;
-import net.dancier.chatdancer.dtos.CreateNewChatRequestDTO;
+import net.dancier.chatdancer.dtos.CreateMessageDto;
+import net.dancier.chatdancer.dtos.CreateNewChatRequestDto;
 import net.dancier.chatdancer.models.ChatType;
 import net.dancier.chatdancer.services.ChatService;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -48,13 +46,13 @@ public class ChatControllerIntegrationTest {
                 .andExpect(status().isOk()).andExpect(jsonPath("$").isEmpty());
 
         // make a post to create a new chat
-        CreateNewChatRequestDTO createNewChatRequestDTO = new CreateNewChatRequestDTO();
+        CreateNewChatRequestDto createNewChatRequestDTO = new CreateNewChatRequestDto();
         createNewChatRequestDTO.setType(ChatType.DIRECT);
         createNewChatRequestDTO.setDancerIds(List.of(firstDancerId, secondDancerId));
 
         mockMvc.perform(post("/chats")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(createNewChatRequestDTO)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(createNewChatRequestDTO)))
                 .andExpect(status().isCreated());
 
         // check with a get, that the chat is really created
@@ -66,25 +64,36 @@ public class ChatControllerIntegrationTest {
 
     }
 
+    @Test
     void postingMessagesToAChatWorks() throws Exception {
         UUID dancerId = UUID.randomUUID();
 
-
-        mockMvc.perform(get("/chats").param("dancerId", dancerId.toString()))
-                .andExpect(status().isOk()).andExpect(jsonPath("$").isNotEmpty());
+//        mockMvc.perform(get("/chats").param("dancerId", dancerId.toString()))
+//                .andExpect(status().isOk()).andExpect(jsonPath("$").isNotEmpty());
 
         // now post message to the chat
 
-        //
+        CreateMessageDto createMessageDto = CreateMessageDto.builder().text("testMessage").authorId(dancerId).build();
+
+        mockMvc.perform(post("/chats/{chatId}/messages", "ae30938e-8d5c-4d18-960e-214be61cf83a")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(createMessageDto)))
+                .andExpect(status().isCreated()).andExpect(jsonPath("$.text").value("testMessage"));
 
     }
-     void postToANonExistingChatLeadTo404() throws Exception {
 
-     }
+    @Test
+    void postMessageToANonExistingChatLeadsTo404() throws Exception {
+        UUID chatId = UUID.randomUUID();
 
-     void creatingANewChatWithoutATypeLeadTo400() throws Exception {
+        mockMvc.perform(post("/chats/{chatId}/messages", chatId)).andExpect(status().isNotFound());
 
-     }
+    }
+
+    void creatingANewChatWithoutATypeLeadTo400() throws Exception {
+
+
+    }
 
     @Test
     void testGetChatReturnsEmptyList() throws Exception {

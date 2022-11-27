@@ -6,7 +6,6 @@ import net.dancier.chatdancer.models.Chat;
 import net.dancier.chatdancer.models.Message;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,15 +14,16 @@ import java.util.UUID;
 public class ChatService {
 
     private final ChatDaoInMemory chatDaoInMemory;
+
     public Chat createNewChat(Chat chat) {
         // sending an event to kafka
         return chatDaoInMemory.createNewChatByParticipants(chat);
     }
 
 
-    public List<Chat> getAllChatsForUser(UUID id) {
+    public List<Chat> getAllChatsForDancer(UUID id) {
 
-        return chatDaoInMemory.getAllChatsForUser(id);
+        return chatDaoInMemory.getAllChatsForDancer(id);
     }
 
     public Chat getChatById(UUID chatId) {
