@@ -17,6 +17,7 @@ public class ChatService {
 
     public Chat createNewChat(Chat chat) {
         // sending an event to kafka
+
         return chatDaoInMemory.createNewChatByParticipants(chat);
     }
 

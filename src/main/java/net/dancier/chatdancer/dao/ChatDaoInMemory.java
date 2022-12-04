@@ -28,7 +28,7 @@ public class ChatDaoInMemory implements ChatDao {
         List<Chat> usersChats = new ArrayList<>();
 
         for (Chat chat : myChats) {
-            if (chat.getDancersIds().contains(id)) {
+            if (chat.getDancersIds() != null && chat.getDancersIds().contains(id)) {
                 usersChats.add(chat);
             }
         }

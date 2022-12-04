@@ -7,6 +7,8 @@ import net.dancier.chatdancer.dtos.CreateNewChatRequestDto;
 import net.dancier.chatdancer.models.Chat;
 import net.dancier.chatdancer.models.Message;
 import net.dancier.chatdancer.services.ChatService;
+import net.dancier.chatdancer.utils.BadRequestException;
+import net.dancier.chatdancer.utils.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -49,6 +51,10 @@ public class ChatController {
 
     @PostMapping
     public ResponseEntity<ChatResponseDto> createNewChat(@RequestBody CreateNewChatRequestDto createNewChatRequestDTO) {
+        if (createNewChatRequestDTO.getType() == null) {
+            throw new BadRequestException("chat type must exist");
+        }
+
         Chat chat = convertDtoToChat(createNewChatRequestDTO);
 
         Chat createdChat = chatService.createNewChat(chat);
@@ -67,7 +73,11 @@ public class ChatController {
 
         Message newMessage = Message.builder().text(createMessageDto.getText()).authorId(createMessageDto.getAuthorId()).build();
 
-        return new ResponseEntity<>(chatService.createMessageForChat(newMessage, chatId), HttpStatus.CREATED);
+        try {
+            return new ResponseEntity<>(chatService.createMessageForChat(newMessage, chatId), HttpStatus.CREATED);
+        } catch (RuntimeException ex) {
+            throw new NotFoundException(ex.getMessage());
+        }
 
     }
 
