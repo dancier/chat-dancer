@@ -1,6 +1,7 @@
 package net.dancier.chatdancer.controllers;
 
 import lombok.RequiredArgsConstructor;
+import net.dancier.chatdancer.dtos.ChatResponsesDto;
 import net.dancier.chatdancer.dtos.ChatResponseDto;
 import net.dancier.chatdancer.dtos.CreateMessageDto;
 import net.dancier.chatdancer.dtos.CreateNewChatRequestDto;
@@ -27,12 +28,13 @@ public class ChatController {
     private final ChatService chatService;
 
     @GetMapping
-    public ResponseEntity<List<ChatResponseDto>> getAllChats(@RequestParam UUID dancerId) {
+    public ResponseEntity<ChatResponsesDto> getAllChats(@RequestParam UUID dancerId) {
 
         List<Chat> allChatsForDancer = chatService.getAllChatsForDancer(dancerId);
         List<ChatResponseDto> chatResponseDtoList = allChatsForDancer.stream().map(this::convertChatToDto).toList();
+        ChatResponsesDto chatResponsesDto = ChatResponsesDto.builder().chats(chatResponseDtoList).build();
 
-        return new ResponseEntity<>(chatResponseDtoList, HttpStatus.OK);
+        return new ResponseEntity<>(chatResponsesDto, HttpStatus.OK);
     }
 
     @GetMapping("/{chatId}")
