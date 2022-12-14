@@ -7,6 +7,6 @@ import java.util.List;
 
 @Data
 @Builder
-public class ChatResponsesDto {
+public class ChatsResponseDto {
     List<ChatResponseDto> chats;
 }

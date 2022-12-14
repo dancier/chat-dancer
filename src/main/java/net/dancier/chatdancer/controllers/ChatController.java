@@ -1,10 +1,7 @@
 package net.dancier.chatdancer.controllers;
 
 import lombok.RequiredArgsConstructor;
-import net.dancier.chatdancer.dtos.ChatResponsesDto;
-import net.dancier.chatdancer.dtos.ChatResponseDto;
-import net.dancier.chatdancer.dtos.CreateMessageDto;
-import net.dancier.chatdancer.dtos.CreateNewChatRequestDto;
+import net.dancier.chatdancer.dtos.*;
 import net.dancier.chatdancer.models.Chat;
 import net.dancier.chatdancer.models.Message;
 import net.dancier.chatdancer.services.ChatService;
@@ -28,13 +25,13 @@ public class ChatController {
     private final ChatService chatService;
 
     @GetMapping
-    public ResponseEntity<ChatResponsesDto> getAllChats(@RequestParam UUID dancerId) {
+    public ResponseEntity<ChatsResponseDto> getAllChats(@RequestParam UUID dancerId) {
 
         List<Chat> allChatsForDancer = chatService.getAllChatsForDancer(dancerId);
         List<ChatResponseDto> chatResponseDtoList = allChatsForDancer.stream().map(this::convertChatToDto).toList();
-        ChatResponsesDto chatResponsesDto = ChatResponsesDto.builder().chats(chatResponseDtoList).build();
+        ChatsResponseDto chatsResponseDto = ChatsResponseDto.builder().chats(chatResponseDtoList).build();
 
-        return new ResponseEntity<>(chatResponsesDto, HttpStatus.OK);
+        return new ResponseEntity<>(chatsResponseDto, HttpStatus.OK);
     }
 
     @GetMapping("/{chatId}")
@@ -46,9 +43,12 @@ public class ChatController {
     }
 
     @GetMapping("/{chatId}/messages")
-    public ResponseEntity<List<Message>> getAllMessagesForChat(@PathVariable UUID chatId) {
+    public ResponseEntity<MessagesResponseDto> getAllMessagesForChat(@PathVariable UUID chatId) {
 
-        return new ResponseEntity<>(chatService.getAllMessagesForChat(chatId), HttpStatus.OK);
+        List<MessageResponseDto> messageResponseDtoList =
+                chatService.getAllMessagesForChat(chatId).stream().map(this::convertMessageToDto).toList();
+        MessagesResponseDto messagesResponseDto = MessagesResponseDto.builder().messages(messageResponseDtoList).build();
+        return new ResponseEntity<>(messagesResponseDto, HttpStatus.OK);
     }
 
     @PostMapping
@@ -91,6 +91,18 @@ public class ChatController {
                 .lastActivity(chat.getLastActivity())
                 .type(chat.getType())
                 .lastMessage(chat.getLastMessage())
+                .build();
+
+    }
+
+    private MessageResponseDto convertMessageToDto(Message message) {
+
+        return MessageResponseDto.builder()
+                .chatId(message.getChatId())
+                .createdAt(message.getCreatedAt())
+                .text(message.getText())
+                .id(message.getId())
+                .authorId(message.getAuthorId())
                 .build();
 
     }
