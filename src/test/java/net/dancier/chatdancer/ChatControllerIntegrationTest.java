@@ -39,7 +39,7 @@ public class ChatControllerIntegrationTest {
         UUID secondDancerId = UUID.randomUUID();
         // first assert we have no chat for a given dancer id
         mockMvc.perform(get("/chats").param("dancerId", UUID.randomUUID().toString()))
-                .andExpect(status().isOk()).andExpect(jsonPath("$").isEmpty());
+                .andExpect(status().isOk()).andExpect(jsonPath("$.chats").isEmpty());
 
         // make a post to create a new chat
         CreateNewChatRequestDto createNewChatRequestDTO = new CreateNewChatRequestDto();
@@ -107,7 +107,7 @@ public class ChatControllerIntegrationTest {
     @Test
     void testGetChatReturnsEmptyList() throws Exception {
         mockMvc.perform(get("/chats").param("dancerId", UUID.randomUUID().toString()))
-                .andExpect(status().isOk()).andExpect(jsonPath("$").isEmpty());
+                .andExpect(status().isOk()).andExpect(jsonPath("$.chats").isEmpty());
     }
 
 

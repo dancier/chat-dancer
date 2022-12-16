@@ -99,7 +99,7 @@ public class ChatController {
 
         return MessageResponseDto.builder()
                 .chatId(message.getChatId())
-                .createdAt(message.getCreatedAt())
+                .creationTimestamp(message.getCreationTimestamp())
                 .text(message.getText())
                 .id(message.getId())
                 .authorId(message.getAuthorId())

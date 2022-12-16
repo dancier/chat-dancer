@@ -11,6 +11,7 @@ import java.util.UUID;
 @Data
 @Builder
 public class Chat {
+
     private UUID chatId;
     private List<UUID> dancersIds;
     @Nullable

@@ -8,7 +8,6 @@ import java.util.UUID;
 
 @Data
 public class CreateNewChatRequestDto {
-
     private List<UUID> dancerIds;
     private ChatType type;
 }

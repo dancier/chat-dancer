@@ -2,6 +2,7 @@ package net.dancier.chatdancer.dao;
 
 import net.dancier.chatdancer.models.Chat;
 import net.dancier.chatdancer.models.Message;
+import net.dancier.chatdancer.utils.NotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -45,7 +46,7 @@ public class ChatDaoInMemory implements ChatDao {
                 return chat;
             }
         }
-        return null;
+        throw new NotFoundException("chat not found");
     }
 
     @Override
@@ -63,7 +64,7 @@ public class ChatDaoInMemory implements ChatDao {
                 .chatId(chatId)
                 .authorId(message.getAuthorId())
                 .text(message.getText())
-                .createdAt(new Timestamp(new Date().getTime()))
+                .creationTimestamp(new Timestamp(new Date().getTime()))
                 .build());
 
         List<Message> messageList = getChatById(chatId).getMessages();
