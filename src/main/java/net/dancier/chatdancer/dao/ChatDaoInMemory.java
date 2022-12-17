@@ -2,6 +2,7 @@ package net.dancier.chatdancer.dao;
 
 import net.dancier.chatdancer.models.Chat;
 import net.dancier.chatdancer.models.Message;
+import net.dancier.chatdancer.utils.NotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -17,7 +18,13 @@ public class ChatDaoInMemory implements ChatDao {
     @Override
     public Chat createNewChatByParticipants(Chat chat) {
         UUID chatId = UUID.randomUUID();
-        myChats.add(Chat.builder().chatId(chatId).messages(new ArrayList<>()).type(chat.getType()).dancersIds(chat.getDancersIds()).creationTimestamp(new Timestamp(System.currentTimeMillis())).build());
+        myChats.add(Chat.builder()
+                .chatId(chatId)
+                .messages(new ArrayList<>())
+                .type(chat.getType())
+                .dancersIds(chat.getDancersIds())
+                .creationTimestamp(new Timestamp(new Date().getTime()))
+                .build());
         return myChats.get(myChats.size() - 1);
 
     }
@@ -45,7 +52,7 @@ public class ChatDaoInMemory implements ChatDao {
                 return chat;
             }
         }
-        return null;
+        throw new NotFoundException(String.format("Chat with id %s not found", chatId));
     }
 
     @Override
@@ -63,11 +70,14 @@ public class ChatDaoInMemory implements ChatDao {
                 .chatId(chatId)
                 .authorId(message.getAuthorId())
                 .text(message.getText())
-                .createdAt(new Timestamp(new Date().getTime()))
+                .creationTimestamp(new Timestamp(new Date().getTime()))
                 .build());
 
-        List<Message> messageList = getChatById(chatId).getMessages();
+        List<Message> messageList = chat.getMessages();
         chat.setLastMessage(chat.getMessages().get(messageList.size() - 1));
+        if (chat.getLastMessage() != null) {
+            chat.setLastActivity(chat.getLastMessage().getCreationTimestamp());
+        }
 
         return messageList.get(messageList.size() - 1);
     }

@@ -13,5 +13,5 @@ public class Message {
     private UUID chatId;
     private String text;
     private UUID authorId;
-    private Timestamp createdAt;
+    private Timestamp creationTimestamp;
 }
