@@ -6,11 +6,11 @@ import net.dancier.chatdancer.models.Chat;
 import net.dancier.chatdancer.models.Message;
 import net.dancier.chatdancer.services.ChatService;
 import net.dancier.chatdancer.utils.BadRequestException;
-import net.dancier.chatdancer.utils.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -52,7 +52,7 @@ public class ChatController {
     }
 
     @PostMapping
-    public ResponseEntity<ChatResponseDto> createNewChat(@RequestBody CreateNewChatRequestDto createNewChatRequestDTO) {
+    public ResponseEntity<ChatResponseDto> createNewChat(@Validated @RequestBody CreateNewChatRequestDto createNewChatRequestDTO) {
         if (createNewChatRequestDTO.getType() == null) {
             throw new BadRequestException("chat type must exist");
         }
@@ -71,15 +71,11 @@ public class ChatController {
     }
 
     @PostMapping("/{chatId}/messages")
-    ResponseEntity<Message> createNewMessage(@PathVariable UUID chatId, @RequestBody CreateMessageDto createMessageDto) {
+    ResponseEntity<Message> createNewMessage(@PathVariable UUID chatId, @Validated @RequestBody CreateMessageDto createMessageDto) {
 
         Message newMessage = Message.builder().text(createMessageDto.getText()).authorId(createMessageDto.getAuthorId()).build();
 
-        try {
-            return new ResponseEntity<>(chatService.createMessageForChat(newMessage, chatId), HttpStatus.CREATED);
-        } catch (RuntimeException ex) {
-            throw new NotFoundException(ex.getMessage());
-        }
+        return new ResponseEntity<>(chatService.createMessageForChat(newMessage, chatId), HttpStatus.CREATED);
 
     }
 
@@ -91,6 +87,7 @@ public class ChatController {
                 .lastActivity(chat.getLastActivity())
                 .type(chat.getType())
                 .lastMessage(chat.getLastMessage())
+                .creationTimestamp(chat.getCreationTimestamp())
                 .build();
 
     }
