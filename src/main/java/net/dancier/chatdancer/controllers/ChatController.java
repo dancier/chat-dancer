@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,7 +31,6 @@ public class ChatController {
         List<Chat> allChatsForDancer = chatService.getAllChatsForDancer(dancerId);
         List<ChatResponseDto> chatResponseDtoList = allChatsForDancer.stream().map(this::convertChatToDto).toList();
         ChatsResponseDto chatsResponseDto = ChatsResponseDto.builder().chats(chatResponseDtoList).build();
-
         return new ResponseEntity<>(chatsResponseDto, HttpStatus.OK);
     }
 
@@ -88,18 +88,20 @@ public class ChatController {
         return ChatResponseDto.builder()
                 .chatId(chat.getChatId())
                 .dancerIds(chat.getDancersIds())
-                .lastActivity(chat.getLastActivity())
                 .type(chat.getType())
-                .lastMessage(chat.getLastMessage())
+                .lastMessage(convertMessageToDto(chat.getLastMessage()))
                 .build();
 
     }
 
     private MessageResponseDto convertMessageToDto(Message message) {
+        if (message == null) {
+            return null;
+        }
 
         return MessageResponseDto.builder()
                 .chatId(message.getChatId())
-                .createdAt(message.getCreatedAt())
+                .createdAt(message.getCreatedAt().toLocalDateTime())
                 .text(message.getText())
                 .id(message.getId())
                 .authorId(message.getAuthorId())
