@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  dancer-db:
+  chat-dancer-db:
     image: postgres:14
     restart: always
     ports:
