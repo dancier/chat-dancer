@@ -16,7 +16,7 @@ public class ChatDaoInMemory implements ChatDao {
     List<Chat> myChats = new LinkedList<>(List.of(Chat.builder().chatId(testChatUUID).messages(testMessageList).build()));
 
     @Override
-    public Chat createNewChatByParticipants(Chat chat) {
+    public Chat createNewChat(Chat chat) {
         UUID chatId = UUID.randomUUID();
         myChats.add(Chat.builder()
                 .chatId(chatId)

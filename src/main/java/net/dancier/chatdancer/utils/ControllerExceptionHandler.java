@@ -16,7 +16,7 @@ public class ControllerExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
     public NotFoundException handleNotFound(NotFoundException ex) {
-        log.info("Requested Chat not found");
+        log.info(ex.getMessage());
         return ex;
     }
 
@@ -25,16 +25,16 @@ public class ControllerExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BadRequestException.class)
     public BadRequestException handleBadRequest(BadRequestException ex) {
-        log.info("Invalid chat type supplied in request");
+        log.info(ex.getMessage());
         return ex;
     }
 
     // 500
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(InternalServerException.class)
-    public InternalServerException handleGeneralError(InternalServerException ex) {
-        log.error("An error occurred processing request, message: " + ex.getMessage());
+    @ExceptionHandler(InternalServerErrorException.class)
+    public InternalServerErrorException handleGeneralError(InternalServerErrorException ex) {
+        log.error("An error occurred while processing request, message: " + ex.getMessage());
         return ex;
     }
 

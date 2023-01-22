@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface ChatDao {
 
-    Chat createNewChatByParticipants(Chat chat);
+    Chat createNewChat(Chat chat);
 
     List<Chat> getAllChatsForDancer(UUID id);
 
