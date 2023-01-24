@@ -1,9 +1,9 @@
 package net.dancier.chatdancer.dtos;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import net.dancier.chatdancer.models.ChatType;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 

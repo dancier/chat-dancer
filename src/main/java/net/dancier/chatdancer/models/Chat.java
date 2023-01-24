@@ -1,10 +1,10 @@
 package net.dancier.chatdancer.models;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.lang.Nullable;
 
-import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
