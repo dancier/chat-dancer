@@ -1,7 +1,7 @@
 package net.dancier.chatdancer.services;
 
 import lombok.RequiredArgsConstructor;
-import net.dancier.chatdancer.dao.ChatDaoInMemory;
+import net.dancier.chatdancer.dao.ChatDao;
 import net.dancier.chatdancer.models.Chat;
 import net.dancier.chatdancer.models.Message;
 import org.springframework.stereotype.Service;
@@ -13,30 +13,29 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ChatService {
 
-    private final ChatDaoInMemory chatDaoInMemory;
+    private final ChatDao chatDao;
 
     public Chat createNewChat(Chat chat) {
         // sending an event to kafka
 
-        return chatDaoInMemory.createNewChat(chat);
+        return chatDao.createNewChat(chat);
     }
 
 
     public List<Chat> getAllChatsForDancer(UUID id) {
-
-        return chatDaoInMemory.getAllChatsForDancer(id);
+        return chatDao.getAllChatsForDancer(id);
     }
 
     public Chat getChatById(UUID chatId) {
-        return chatDaoInMemory.getChatById(chatId);
+        return chatDao.getChatById(chatId);
     }
 
     public List<Message> getAllMessagesForChat(UUID chatId) {
-        return chatDaoInMemory.getAllMessagesForChat(chatId);
+        return chatDao.getAllMessagesForChat(chatId);
     }
 
     public Message createMessageForChat(Message message, UUID chatId) {
-        return chatDaoInMemory.createNewMessageForChat(message, chatId);
+        return chatDao.createNewMessageForChat(message, chatId);
     }
 
 }
