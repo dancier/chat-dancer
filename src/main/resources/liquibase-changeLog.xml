@@ -14,4 +14,12 @@
             );
         </sql>
     </changeSet>
+    <changeSet id="2023-11-05-2-add-participants" author="Marc">
+        <sql>
+            CREATE TABLE chat_participants (
+                chat_id UUID,
+                participant_id VARCHAR(256)
+            );
+        </sql>
+    </changeSet>
 </databaseChangeLog>

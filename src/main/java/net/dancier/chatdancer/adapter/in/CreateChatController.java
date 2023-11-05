@@ -1,12 +1,15 @@
 package net.dancier.chatdancer.adapter.in;
 
 import lombok.RequiredArgsConstructor;
+import net.dancier.chatdancer.application.domain.model.Chat;
 import net.dancier.chatdancer.application.port.in.CreateChatCommand;
 import net.dancier.chatdancer.application.port.in.CreateChatUseCase;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -18,7 +21,7 @@ public class CreateChatController {
     void createChat(@Validated @RequestBody CreateChatDto createChatDto) {
         System.out.println("foo");
         CreateChatCommand createChatCommand = new CreateChatCommand(
-            createChatDto.getDancerIds().stream().map(uuid -> new CreateChatCommand.ParticipantId(uuid.toString())).toList()
+            createChatDto.getDancerIds().stream().map(str -> new Chat.ParticipantId(str)).collect(Collectors.toSet())
         );
         System.out.println(createChatCommand);
         createChatUseCase.createChat(createChatCommand);
