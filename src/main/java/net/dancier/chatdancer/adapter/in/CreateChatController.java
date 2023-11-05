@@ -14,7 +14,7 @@ public class CreateChatController {
 
     private final CreateChatUseCase createChatUseCase;
 
-    @PostMapping("/foo")
+    @PostMapping("/h/chats")
     void createChat(@Validated @RequestBody CreateChatDto createChatDto) {
         System.out.println("foo");
         CreateChatCommand createChatCommand = new CreateChatCommand(
