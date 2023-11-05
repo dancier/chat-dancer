@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/chat-dancer
+    username: chat-dancer
+    password: chat-dancer
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  liquibase:
+    change-log: classpath:liquibase-changeLog.xml
+server:
+  error:
+    include-stacktrace: never
