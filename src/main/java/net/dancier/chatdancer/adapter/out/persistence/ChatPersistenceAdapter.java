@@ -30,5 +30,6 @@ public class ChatPersistenceAdapter implements LoadChatPort, UpdateChatPort {
         jpaChatEntity.setId(chat.getChatId());
         jpaChatEntity.setParticipants(chat.getChatParticipants().stream().map(p -> p.getValue()).collect(Collectors.toSet()));
         chatJpaRepository.save(jpaChatEntity);
+
     }
 }

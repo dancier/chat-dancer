@@ -24,14 +24,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ChatControllerIntegrationTest {
+public class ChatControllerIntegrationTest extends AbstractPostgreSQLEnabledTest {
 
     @Autowired
     MockMvc mockMvc;
 
     @Autowired
     ObjectMapper objectMapper;
-
 
     @Test
     void testCreateAChatWorks() throws Exception {
@@ -109,6 +108,5 @@ public class ChatControllerIntegrationTest {
         mockMvc.perform(get("/chats").param("dancerId", UUID.randomUUID().toString()))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.chats").isEmpty());
     }
-
 
 }
