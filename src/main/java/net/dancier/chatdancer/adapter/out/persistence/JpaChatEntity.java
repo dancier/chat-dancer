@@ -22,4 +22,5 @@ public class JpaChatEntity {
     @Column(name = "participant_id")
     private Set<String> participants;
 
+
 }

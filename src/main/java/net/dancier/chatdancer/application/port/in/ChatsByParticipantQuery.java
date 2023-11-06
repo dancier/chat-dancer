@@ -2,7 +2,7 @@ package net.dancier.chatdancer.application.port.in;
 
 import lombok.Value;
 
-public record GetAllChatsForParticipantQuery (
+public record ChatsByParticipantQuery(
         ParticipantId participantId
 ){
     @Value
