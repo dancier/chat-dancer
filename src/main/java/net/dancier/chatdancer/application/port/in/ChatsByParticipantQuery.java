@@ -1,13 +1,6 @@
 package net.dancier.chatdancer.application.port.in;
 
-import lombok.Value;
+import net.dancier.chatdancer.application.domain.model.Chat;
 
-public record ChatsByParticipantQuery(
-        ParticipantId participantId
-){
-    @Value
-    public static class ParticipantId {
-        private String value;
-    }
-
+public record ChatsByParticipantQuery(Chat.ParticipantId participantId) {
 }

@@ -3,7 +3,6 @@ package net.dancier.chatdancer.adapter.out.persistence;
 import lombok.AllArgsConstructor;
 import net.dancier.chatdancer.application.domain.model.Chat;
 import net.dancier.chatdancer.application.port.in.ChatsByParticipantQuery;
-import net.dancier.chatdancer.application.port.in.ChatsByParticipantResponse;
 import net.dancier.chatdancer.application.port.out.ChatsByParticipantPort;
 import net.dancier.chatdancer.application.port.out.LoadChatPort;
 import net.dancier.chatdancer.application.port.out.UpdateChatPort;
@@ -26,24 +25,26 @@ public class ChatPersistenceAdapter implements LoadChatPort, UpdateChatPort, Cha
 
     @Override
     public Chat loadChat(Chat.ChatId chatId) {
-        return null;
+        ChatJpaEntity jpaChatEntity = chatJpaRepository.findById(chatId.getId()).orElseThrow();
+        log.info("got: " + jpaChatEntity);
+        return chatMapper.fromJpaChatEntityToChat(jpaChatEntity);
     }
 
     @Override
-    public void updateChat(Chat chat) {
-
-        JpaChatEntity jpaChatEntity = new JpaChatEntity();
-        jpaChatEntity.setId(chat.getChatId());
-        jpaChatEntity.setParticipants(chat.getChatParticipants().stream().map(p -> p.getValue()).collect(Collectors.toSet()));
-        chatJpaRepository.save(jpaChatEntity);
-
+    public Chat.ChatId updateChat(Chat chat) {
+        log.info("updating: " + chat);
+        ChatJpaEntity chatJpaEntity = chatMapper.fromChatToJpaChatEntity(chat);
+        chatJpaRepository.save(chatJpaEntity);
+        log.info("done: " + chat);
+        return new Chat.ChatId(chatJpaEntity.getId());
     }
 
+
     @Override
-    public List<ChatsByParticipantResponse> getChatsByParticipant(ChatsByParticipantQuery query) {
+    public List<Chat> getChatsByParticipant(ChatsByParticipantQuery query) {
         log.info("Getting chat in persistence layer for participant: {}", query);
-        List<JpaChatEntity> jpaChatEntities = chatJpaRepository.findByParticipant(query.participantId().getValue());
+        List<ChatJpaEntity> jpaChatEntities = chatJpaRepository.findByParticipant(query.participantId().getId());
         log.info("found this: " + jpaChatEntities);
-        return jpaChatEntities.stream().map(chatMapper::mapFromJpaChatEntity).collect(Collectors.toList());
+        return jpaChatEntities.stream().map(chatMapper::fromJpaChatEntityToChat).collect(Collectors.toList());
     }
 }

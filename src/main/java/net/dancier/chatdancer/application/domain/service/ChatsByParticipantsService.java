@@ -1,8 +1,8 @@
-package net.dancier.chatdancer.application.service;
+package net.dancier.chatdancer.application.domain.service;
 
 import lombok.RequiredArgsConstructor;
+import net.dancier.chatdancer.application.domain.model.Chat;
 import net.dancier.chatdancer.application.port.in.ChatsByParticipantQuery;
-import net.dancier.chatdancer.application.port.in.ChatsByParticipantResponse;
 import net.dancier.chatdancer.application.port.in.ChatsByParticipantUseCase;
 import net.dancier.chatdancer.application.port.out.ChatsByParticipantPort;
 import org.slf4j.LoggerFactory;
@@ -20,7 +20,7 @@ public class ChatsByParticipantsService implements ChatsByParticipantUseCase {
     private final ChatsByParticipantPort chatsByParticipantPort;
 
     @Override
-    public List<ChatsByParticipantResponse> load(ChatsByParticipantQuery query) {
+    public List<Chat> load(ChatsByParticipantQuery query) {
         log.info("Getting Participant for {}", query);
         return chatsByParticipantPort.getChatsByParticipant(query);
     }

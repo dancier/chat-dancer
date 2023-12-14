@@ -22,4 +22,39 @@
             );
         </sql>
     </changeSet>
+    <changeSet id="2023-12-11-add-message-table" author="Marc Gorzala">
+        <sql>
+            CREATE TABLE message (
+                id UUID NOT NULL,
+                chat_id UUID NOT NULL,
+                text VARCHAR(1024) NOT NULL,
+                author_id UUID NOT NULL,
+                created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="2023-12-12-add-outbox-table" author="Marc Gorzala">
+        <sql>
+            CREATE TABLE outbox (
+                id UUID NOT NULL,
+                topic VARCHAR(256) NOT NULL,
+                meta_data JSONB NOT NULL DEFAULT '{}'::jsonb,
+                payload JSONB NOT NULL,
+                created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+                status VARCHAR(256) NOT NULL default 'NEW'
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="2023-12-12-add-key-column-to-outbox-table" author="Maste of Dance">
+        <sql>
+            ALTER TABLE outbox
+              ADD COLUMN key VARCHAR(1024);
+        </sql>
+    </changeSet>
+    <changeSet id="2023-12-14-change-author-id-to-varchar" author="Marc Gorzala">
+        <sql>
+            ALTER TABLE message
+              ALTER COLUMN author_id TYPE VARCHAR(256);
+        </sql>
+    </changeSet>
 </databaseChangeLog>

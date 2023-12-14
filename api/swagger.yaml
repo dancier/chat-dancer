@@ -36,7 +36,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/error'
     post:
-      summary: Creates a new chat group
+      summary: Creates a new group chat
       requestBody:
         content:
           application/json:
@@ -197,13 +197,11 @@ components:
     chatCreation:
       type: object
       properties:
-        dancerIds:
+        participantIds:
           type: array
           items:
             type: string
           example: [ 123, 321 ]
-        type:
-          $ref: '#/components/schemas/chatType'
     chatResponse:
       $ref: '#/components/schemas/detailedChat'
     detailedChat:

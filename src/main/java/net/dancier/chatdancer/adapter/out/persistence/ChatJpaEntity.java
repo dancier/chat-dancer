@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -11,7 +13,7 @@ import java.util.UUID;
 @Data
 @Table(name = "chat")
 @NoArgsConstructor
-public class JpaChatEntity {
+public class ChatJpaEntity {
 
     @Id
     @GeneratedValue
@@ -22,5 +24,11 @@ public class JpaChatEntity {
     @Column(name = "participant_id")
     private Set<String> participants;
 
+    @OneToMany(cascade = CascadeType.ALL,
+                orphanRemoval = true)
+    @JoinColumn(name = "chat_id")
+    private List<JpaMessageEntity> messages;
+
+    private LocalDateTime createdAt;
 
 }

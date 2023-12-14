@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.UUID;
 
-public interface ChatJpaRepository extends JpaRepository<JpaChatEntity, UUID> {
+public interface ChatJpaRepository extends JpaRepository<ChatJpaEntity, UUID> {
 
 
     @Query(nativeQuery = true,
@@ -18,6 +18,6 @@ public interface ChatJpaRepository extends JpaRepository<JpaChatEntity, UUID> {
                      on chat.id = chat_participants.chat_id
                where participant_id = :participantId ;
             """)
-    List<JpaChatEntity> findByParticipant(@Param("participantId") String participantId);
+    List<ChatJpaEntity> findByParticipant(@Param("participantId") String participantId);
 
 }
