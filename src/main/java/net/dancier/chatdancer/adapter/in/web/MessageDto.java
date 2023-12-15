@@ -16,7 +16,7 @@ public class MessageDto {
             return MessageDto.builder()
                     .id(message.getId().getValue().toString())
                     .text(message.getText())
-                    .authorId(message.getAuthorId().toString())
+                    .authorId(message.getAuthorId().getValue().toString())
                     .createdAt(OffsetDateTime.of(message.getCreatedAt(), ZoneOffset.UTC))
                     .build();
         } else {
