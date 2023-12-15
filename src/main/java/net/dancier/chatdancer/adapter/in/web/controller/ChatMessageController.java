@@ -29,7 +29,7 @@ public class ChatMessageController {
 
     private final MessagesByChatUseCase messagesByChatUseCase;
 
-    @GetMapping("/h/chats/{chatId}/messages")
+    @GetMapping("/chats/{chatId}/messages")
     public ResponseEntity<List<MessageDto>> getMessages(@PathVariable UUID chatId) {
         log.info("Getting all Messages");
         List<Message> messages = messagesByChatUseCase.byChatId(new Chat.ChatId(chatId));
@@ -37,7 +37,7 @@ public class ChatMessageController {
         return ResponseEntity.ok(messageDtos);
     }
 
-    @PostMapping("/h/chats/{chatId}/messages")
+    @PostMapping("/chats/{chatId}/messages")
     public ResponseEntity postChatMessage(@PathVariable UUID chatId, @Validated @RequestBody PostChatMessageRequestDto postChatMessageRequestDto) {
         PostChatMessageCommand postChatMessageCommand = new PostChatMessageCommand(
                 postChatMessageRequestDto.getText(),

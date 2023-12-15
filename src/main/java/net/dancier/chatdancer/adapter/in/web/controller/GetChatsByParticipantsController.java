@@ -24,7 +24,7 @@ public class GetChatsByParticipantsController {
 
     private final ChatsByParticipantsService chatsByParticipantsService;
 
-    @GetMapping("/h/chats")
+    @GetMapping("/chats")
     public ResponseEntity<List<GetChatResponseDto>> getAllChats(@RequestParam String participantId) {
         log.info("Getting all Chats for " + participantId);
         ChatsByParticipantQuery query = new ChatsByParticipantQuery(new Chat.ParticipantId(participantId.toString()));

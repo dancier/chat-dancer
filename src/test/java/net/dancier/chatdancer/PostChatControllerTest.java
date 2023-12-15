@@ -5,7 +5,6 @@ import net.dancier.chatdancer.adapter.in.web.MessageDto;
 import net.dancier.chatdancer.adapter.in.web.PostChatMessageRequestDto;
 import net.dancier.chatdancer.adapter.in.web.PostChatRequestDto;
 import net.dancier.chatdancer.adapter.in.web.controller.PostChatController;
-import net.dancier.chatdancer.application.port.in.ChatsByParticipantResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,7 +112,7 @@ public class PostChatControllerTest extends AbstractPostgreSQLEnabledTest {
         HttpEntity<PostChatMessageRequestDto> request = new HttpEntity<>(postChatMessageRequestDto, headers);
 
         return testRestTemplate.exchange(
-                String.format("/h/chats/%s/messages", chatId),
+                String.format("/chats/%s/messages", chatId),
                 HttpMethod.POST,
                 request,
                 Object.class
@@ -126,7 +125,7 @@ public class PostChatControllerTest extends AbstractPostgreSQLEnabledTest {
         HttpEntity<Void> request = new HttpEntity<>(headers);
 
         return testRestTemplate.exchange(
-                String.format("/h/chats/%s/messages", chatId),
+                String.format("/chats/%s/messages", chatId),
                 HttpMethod.GET,
                 request,
                 MessageDto[].class
@@ -160,7 +159,7 @@ public class PostChatControllerTest extends AbstractPostgreSQLEnabledTest {
     }
 
     private ResponseEntity<GetChatResponseDto[]> whenGetChatsByParticipantsIsBeingInvoked(String participantId) {
-        String uriTemplate = "/h/chats?participantId={participantId}";
+        String uriTemplate = "/chats?participantId={participantId}";
         Map<String, String> getParameter = Map.of("participantId", participantId);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");

@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 public class PostChatController {
 
     public final Logger log = LoggerFactory.getLogger(PostChatController.class);
-    public final static String CREATE_CHAT_ENDPOINT = "/h/chats";
-    public final static String GET_CHAT_URI_PATTERN = "/h/chats/{0}";
+    public final static String CREATE_CHAT_ENDPOINT = "/chats";
+    public final static String GET_CHAT_URI_PATTERN = "/chats/{0}";
 
     private final CreateChatUseCase createChatUseCase;
 

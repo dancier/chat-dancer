@@ -20,7 +20,7 @@ import java.util.UUID;
 public class GetChatController {
 
     private final static Logger log = LoggerFactory.getLogger(GetChatController.class);
-    public static final String GET_ENDPOINT = "/h/chats/{id}";
+    public static final String GET_ENDPOINT = "/chats/{id}";
 
     private final GetChatUseCase getChatUseCase;
 
