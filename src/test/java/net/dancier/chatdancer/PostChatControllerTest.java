@@ -1,9 +1,6 @@
 package net.dancier.chatdancer;
 
-import net.dancier.chatdancer.adapter.in.web.GetChatResponseDto;
-import net.dancier.chatdancer.adapter.in.web.MessageDto;
-import net.dancier.chatdancer.adapter.in.web.PostChatMessageRequestDto;
-import net.dancier.chatdancer.adapter.in.web.PostChatRequestDto;
+import net.dancier.chatdancer.adapter.in.web.*;
 import net.dancier.chatdancer.adapter.in.web.controller.PostChatController;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,10 +34,10 @@ public class PostChatControllerTest extends AbstractPostgreSQLEnabledTest {
         // After we created a chat we should be able to geht the chat
         PostChatRequestDto postChatDto = new PostChatRequestDto();
         postChatDto.setParticipantIds(List.of("foo", "bar"));
-        ResponseEntity createdChatResponse = whenCreateChatEndpointIsBeingInvoked(postChatDto);
+        ResponseEntity<CreatedChatDto> createdChatResponse = whenCreateChatEndpointIsBeingInvoked(postChatDto);
 
         then(createdChatResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        then(createdChatResponse.getBody()).isNull();
+        then(createdChatResponse.getBody().getId()).isNotNull();
 
         // extract what chat has been created (its URI)
         String createChatResource = createdChatResponse.getHeaders().getLocation().toString();
@@ -146,7 +143,7 @@ public class PostChatControllerTest extends AbstractPostgreSQLEnabledTest {
         );
     }
 
-    private ResponseEntity whenCreateChatEndpointIsBeingInvoked(PostChatRequestDto postChatDto) {
+    private ResponseEntity<CreatedChatDto> whenCreateChatEndpointIsBeingInvoked(PostChatRequestDto postChatDto) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         HttpEntity<PostChatRequestDto> request = new HttpEntity<>(postChatDto, headers);
@@ -154,7 +151,7 @@ public class PostChatControllerTest extends AbstractPostgreSQLEnabledTest {
                 PostChatController.CREATE_CHAT_ENDPOINT,
                 HttpMethod.POST,
                 request,
-                Object.class
+                CreatedChatDto.class
         );
     }
 

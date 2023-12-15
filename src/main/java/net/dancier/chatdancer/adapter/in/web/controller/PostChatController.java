@@ -1,6 +1,7 @@
 package net.dancier.chatdancer.adapter.in.web.controller;
 
 import lombok.RequiredArgsConstructor;
+import net.dancier.chatdancer.adapter.in.web.CreatedChatDto;
 import net.dancier.chatdancer.adapter.in.web.PostChatRequestDto;
 import net.dancier.chatdancer.application.domain.model.Chat;
 import net.dancier.chatdancer.application.port.in.CreateChatCommand;
@@ -28,7 +29,7 @@ public class PostChatController {
     private final CreateChatUseCase createChatUseCase;
 
     @PostMapping(CREATE_CHAT_ENDPOINT)
-    ResponseEntity createChat(@Validated @RequestBody PostChatRequestDto postChatDto) {
+    ResponseEntity<CreatedChatDto> createChat(@Validated @RequestBody PostChatRequestDto postChatDto) {
         CreateChatCommand createChatCommand = new CreateChatCommand(
             postChatDto.getParticipantIds().stream().map(str -> new Chat.ParticipantId(str)).collect(Collectors.toSet())
         );
@@ -37,7 +38,9 @@ public class PostChatController {
                 MessageFormat
                         .format(GET_CHAT_URI_PATTERN, chatId.getId())
         );
-        return ResponseEntity.created(uri).build();
+        CreatedChatDto createdChatDto = new CreatedChatDto();
+        createdChatDto.setId(chatId.getId());
+        return ResponseEntity.created(uri).body(createdChatDto);
     }
 
 }
