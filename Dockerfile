@@ -1,5 +1,5 @@
 
-FROM openjdk:17-slim
+FROM openjdk:21-slim
 
 ADD ./target/chat-dancer.jar /chat-dancer.jar
 CMD ["java",  "-jar", "/chat-dancer.jar"]
