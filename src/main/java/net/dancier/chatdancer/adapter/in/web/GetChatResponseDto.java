@@ -26,9 +26,7 @@ public class GetChatResponseDto {
                 ).createdAt(OffsetDateTime.of(chat.getCreatedAt(), ZoneOffset.UTC))
                 .lastMessage(
                         MessageDto.of(
-                                chat.getMessages().stream().reduce(
-                                        (first, second) -> second
-                                ).orElse(null)
+                                optionalLastMessage.orElse(null)
                         )
                 ).lastActivity(
                         optionalLastMessage
@@ -42,6 +40,6 @@ public class GetChatResponseDto {
     Set<String> participantIds;
     OffsetDateTime lastActivity;
     MessageDto lastMessage;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     OffsetDateTime createdAt;
 }

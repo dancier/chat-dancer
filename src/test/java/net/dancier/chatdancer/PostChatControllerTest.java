@@ -96,8 +96,6 @@ public class PostChatControllerTest extends AbstractPostgreSQLEnabledTest {
 
     }
 
-
-
     private ResponseEntity whenPostChatMessageEndpointIsBeingInvoked(String chatId, String text, String author) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
