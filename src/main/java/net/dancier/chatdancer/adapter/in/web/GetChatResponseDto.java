@@ -1,6 +1,6 @@
 package net.dancier.chatdancer.adapter.in.web;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import net.dancier.chatdancer.application.domain.model.Chat;

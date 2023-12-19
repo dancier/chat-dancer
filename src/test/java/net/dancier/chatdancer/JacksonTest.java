@@ -2,22 +2,18 @@ package net.dancier.chatdancer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.OffsetDateTime;
-import java.time.OffsetTime;
 import java.time.ZoneId;
-import java.util.TimeZone;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
 @SpringBootTest
-public class JacksonTest {
+public class JacksonTest extends AbstractPostgreSQLEnabledTest{
 
     @Autowired
     ObjectMapper objectMapper;
