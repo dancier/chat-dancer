@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import net.dancier.chatdancer.application.domain.model.Chat;
+import net.dancier.chatdancer.application.exception.ApplicationException;
 import net.dancier.chatdancer.application.port.in.CreateChatCommand;
 import net.dancier.chatdancer.application.port.in.CreateChatUseCase;
 import net.dancier.chatdancer.application.port.out.SendChatCreatedEventDto;
@@ -28,19 +29,22 @@ public class CreateChatService implements CreateChatUseCase {
     @Override
     @Transactional
     public Chat.ChatId createChat(CreateChatCommand createChatCommand) {
-        System.out.println("Creating Chat");
         Chat chat = Chat.withoutId(LocalDateTime.now());
-        createChatCommand.participants().forEach(p -> chat.addParticipant(p));
+        createChatCommand.participants()
+                .forEach(
+                        participantId -> chat.addParticipant(participantId)
+                );
 
         Chat.ChatId chatId = updateChatPort.updateChat(chat);
 
         SendChatCreatedEventDto sendChatCreatedEventDto = new SendChatCreatedEventDto();
-
+        sendChatCreatedEventDto.setChatId(chatId.getId());
         sendChatCreatedEventDto.setParticipantIds(createChatCommand.participants());
         try {
             sendChatCreatedEventPort.send(sendChatCreatedEventDto);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+        } catch (JsonProcessingException jpe) {
+            log.error("Permanent Error: " + jpe);
+            throw new ApplicationException("Unable to serialize..", jpe);
         }
         return chatId;
     }

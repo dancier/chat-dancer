@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import net.dancier.chatdancer.application.domain.model.Chat;
 import net.dancier.chatdancer.application.domain.model.Message;
 import net.dancier.chatdancer.application.port.in.GetMessagesByChatUseCase;
-import net.dancier.chatdancer.application.port.out.LoadChatPort;
+import net.dancier.chatdancer.application.port.out.GetChatPort;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -13,10 +13,10 @@ import java.util.List;
 @Component
 public class GetMessagesByChatService implements GetMessagesByChatUseCase {
 
-    private final LoadChatPort loadChatPort;
+    private final GetChatPort getChatPort;
 
     @Override
     public List<Message> byChatId(Chat.ChatId chatId) {
-        return loadChatPort.loadChat(chatId).getMessages();
+        return getChatPort.get(chatId).getMessages();
     }
 }

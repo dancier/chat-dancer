@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -24,15 +23,14 @@ public class SendOutboxService {
 
     private final ObjectMapper objectMapper;
 
-    public void send(OutboxJpaEntity entity) throws UnsupportedEncodingException, JsonProcessingException {
+    public void send(OutboxJpaEntity entity) throws JsonProcessingException {
         CloudEvent cloudEvent = CloudEventBuilder.v1()
                         .withId(UUID.randomUUID().toString())
-                        .withSource(URI.create("https://chat-dancer.dancier.net"))
-                        .withType("bla")
-                        .withData(objectMapper.writeValueAsBytes(entity.getPayload()))
-                        .withExtension("foo", "bar").build();
-        log.info("This is the cloud event: " + cloudEvent);
-        kafkaTemplate.send(entity.getTopic(),entity.getKey(), cloudEvent);
+                        .withSource(URI.create(entity.getSource()))
+                        .withType(entity.getType())
+                        .withData(objectMapper.writeValueAsBytes(entity.getData()))
+                .build();
+        kafkaTemplate.send(entity.getType(),entity.getKey(), cloudEvent);
     }
 
 }

@@ -15,6 +15,7 @@ import java.time.OffsetDateTime;
 @Component
 public class ScheduleMessagesAdapter implements SendChatCreatedEventPort {
     private static final Logger log = LoggerFactory.getLogger(ScheduleMessagesAdapter.class);
+    private static final String CHAT_CREATED_SOURCE = "http://chat-dancer.dancier.net/chat-created";
 
     private final OutboxJpaRepository outboxJpaRepository;
 
@@ -22,17 +23,18 @@ public class ScheduleMessagesAdapter implements SendChatCreatedEventPort {
 
     @Override
     public void send(SendChatCreatedEventDto sendChatCreatedEventDto) throws JsonProcessingException {
-        log.info("scheduling the sending of the message in database:  " + sendChatCreatedEventDto);
-        String payload = objectMapper.writeValueAsString(sendChatCreatedEventDto);
+        log.info("Scheduling Business Event for:  " + sendChatCreatedEventDto);
+        String data = objectMapper.writeValueAsString(sendChatCreatedEventDto);
         OutboxJpaEntity outboxJpaEntity = new OutboxJpaEntity();
-        outboxJpaEntity.setMetaData(payload);
         if (sendChatCreatedEventDto.getChatId() != null) {
             outboxJpaEntity.setKey(sendChatCreatedEventDto.getChatId().toString());
         }
-        outboxJpaEntity.setPayload(payload);
-        outboxJpaEntity.setTopic("sccd");
+        outboxJpaEntity.setData(data);
+        outboxJpaEntity.setType(TopicNames.CHAT_CREATED);
         outboxJpaEntity.setCreatedAt(OffsetDateTime.now());
         outboxJpaEntity.setStatus(OutboxJpaEntity.STATUS.NEW);
+        outboxJpaEntity.setKey(sendChatCreatedEventDto.getChatId().toString());
+        outboxJpaEntity.setSource(CHAT_CREATED_SOURCE);
         outboxJpaRepository.save(outboxJpaEntity);
     }
 

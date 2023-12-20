@@ -19,15 +19,14 @@ public class OutboxJpaEntity {
     @GeneratedValue
     private UUID id;
 
-    private String topic;
+    private String type;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    private String metaData;
+    private String source;
 
     private String key;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    private String payload;
+    private String data;
 
     private OffsetDateTime createdAt;
 

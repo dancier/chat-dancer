@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import net.dancier.chatdancer.application.domain.model.Chat;
 import net.dancier.chatdancer.application.port.in.ChatsByParticipantQuery;
 import net.dancier.chatdancer.application.port.out.ChatsByParticipantPort;
-import net.dancier.chatdancer.application.port.out.LoadChatPort;
+import net.dancier.chatdancer.application.port.out.GetChatPort;
 import net.dancier.chatdancer.application.port.out.UpdateChatPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
-public class ChatPersistenceAdapter implements LoadChatPort, UpdateChatPort, ChatsByParticipantPort {
+public class ChatPersistenceAdapter implements GetChatPort, UpdateChatPort, ChatsByParticipantPort {
 
     public static final Logger log = LoggerFactory.getLogger(ChatPersistenceAdapter.class);
 
@@ -24,7 +24,7 @@ public class ChatPersistenceAdapter implements LoadChatPort, UpdateChatPort, Cha
     private final ChatMapper chatMapper;
 
     @Override
-    public Chat loadChat(Chat.ChatId chatId) {
+    public Chat get(Chat.ChatId chatId) {
         ChatJpaEntity jpaChatEntity = chatJpaRepository.findById(chatId.getId()).orElseThrow();
         log.info("got: " + jpaChatEntity);
         return chatMapper.fromJpaChatEntityToChat(jpaChatEntity);

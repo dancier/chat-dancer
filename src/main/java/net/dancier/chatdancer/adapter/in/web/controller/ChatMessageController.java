@@ -43,7 +43,7 @@ public class ChatMessageController {
                 postChatMessageRequestDto.getText(),
                 new Message.AuthorId(postChatMessageRequestDto.getAuthorId()),
                 new Chat.ChatId((chatId)));
-        createChatMessageUseCase.post(createChatMessageCommand);
+        createChatMessageUseCase.create(createChatMessageCommand);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

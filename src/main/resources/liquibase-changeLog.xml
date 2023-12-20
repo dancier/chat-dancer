@@ -57,4 +57,24 @@
               ALTER COLUMN author_id TYPE VARCHAR(256);
         </sql>
     </changeSet>
+    <changeSet id="2023-12-20-alter-table-outbox" author="Marc Gorzala">
+        <sql>
+            ALTER TABLE outbox
+              RENAME payload TO data;
+            ALTER TABLE outbox
+              DROP COLUMN meta_data;
+            ALTER TABLE outbox
+              ADD COLUMN source VARCHAR(256);
+            ALTER TABLE outbox
+              ADD COLUMN type VARCHAR(256);
+        </sql>
+    </changeSet>
+    <changeSet id="2023-12-20-drop-type-rename-topic" author="Marc Gorzala">
+        <sql>
+            ALTER TABLE outbox
+              DROP COLUMN type;
+            ALTER TABLE outbox
+              RENAME topic TO type;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
