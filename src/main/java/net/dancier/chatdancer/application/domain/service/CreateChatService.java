@@ -6,15 +6,14 @@ import lombok.RequiredArgsConstructor;
 import net.dancier.chatdancer.application.domain.model.Chat;
 import net.dancier.chatdancer.application.port.in.CreateChatCommand;
 import net.dancier.chatdancer.application.port.in.CreateChatUseCase;
-import net.dancier.chatdancer.application.port.out.SendChatCreatedDto;
-import net.dancier.chatdancer.application.port.out.SendEventWhenChatCreatedPort;
+import net.dancier.chatdancer.application.port.out.SendChatCreatedEventDto;
+import net.dancier.chatdancer.application.port.out.SendChatCreatedEventPort;
 import net.dancier.chatdancer.application.port.out.UpdateChatPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @Component
@@ -24,7 +23,7 @@ public class CreateChatService implements CreateChatUseCase {
 
     private final UpdateChatPort updateChatPort;
 
-    private final SendEventWhenChatCreatedPort sendEventWhenChatCreatedPort;
+    private final SendChatCreatedEventPort sendChatCreatedEventPort;
 
     @Override
     @Transactional
@@ -35,11 +34,11 @@ public class CreateChatService implements CreateChatUseCase {
 
         Chat.ChatId chatId = updateChatPort.updateChat(chat);
 
-        SendChatCreatedDto sendChatCreatedDto = new SendChatCreatedDto();
+        SendChatCreatedEventDto sendChatCreatedEventDto = new SendChatCreatedEventDto();
 
-        sendChatCreatedDto.setParticipantIds(createChatCommand.participants());
+        sendChatCreatedEventDto.setParticipantIds(createChatCommand.participants());
         try {
-            sendEventWhenChatCreatedPort.send(sendChatCreatedDto);
+            sendChatCreatedEventPort.send(sendChatCreatedEventDto);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

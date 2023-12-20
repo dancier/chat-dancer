@@ -5,9 +5,9 @@ import net.dancier.chatdancer.adapter.in.web.MessageDto;
 import net.dancier.chatdancer.adapter.in.web.PostChatMessageRequestDto;
 import net.dancier.chatdancer.application.domain.model.Chat;
 import net.dancier.chatdancer.application.domain.model.Message;
-import net.dancier.chatdancer.application.port.in.MessagesByChatUseCase;
-import net.dancier.chatdancer.application.port.in.PostChatMessageCommand;
-import net.dancier.chatdancer.application.port.in.PostChatMessageUseCase;
+import net.dancier.chatdancer.application.port.in.GetMessagesByChatUseCase;
+import net.dancier.chatdancer.application.port.in.CreateChatMessageCommand;
+import net.dancier.chatdancer.application.port.in.CreateChatMessageUseCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -25,25 +25,25 @@ public class ChatMessageController {
 
     public static final Logger log = LoggerFactory.getLogger(ChatMessageController.class);
 
-    private final PostChatMessageUseCase postChatMessageUseCase;
+    private final CreateChatMessageUseCase createChatMessageUseCase;
 
-    private final MessagesByChatUseCase messagesByChatUseCase;
+    private final GetMessagesByChatUseCase getMessagesByChatUseCase;
 
     @GetMapping("/chats/{chatId}/messages")
     public ResponseEntity<List<MessageDto>> getMessages(@PathVariable UUID chatId) {
         log.info("Getting all Messages");
-        List<Message> messages = messagesByChatUseCase.byChatId(new Chat.ChatId(chatId));
+        List<Message> messages = getMessagesByChatUseCase.byChatId(new Chat.ChatId(chatId));
         List<MessageDto> messageDtos = messages.stream().map(m -> MessageDto.of(m)).collect(Collectors.toList());
         return ResponseEntity.ok(messageDtos);
     }
 
     @PostMapping("/chats/{chatId}/messages")
     public ResponseEntity postChatMessage(@PathVariable UUID chatId, @Validated @RequestBody PostChatMessageRequestDto postChatMessageRequestDto) {
-        PostChatMessageCommand postChatMessageCommand = new PostChatMessageCommand(
+        CreateChatMessageCommand createChatMessageCommand = new CreateChatMessageCommand(
                 postChatMessageRequestDto.getText(),
                 new Message.AuthorId(postChatMessageRequestDto.getAuthorId()),
                 new Chat.ChatId((chatId)));
-        postChatMessageUseCase.post(postChatMessageCommand);
+        createChatMessageUseCase.post(createChatMessageCommand);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

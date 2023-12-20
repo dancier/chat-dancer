@@ -5,6 +5,6 @@ import net.dancier.chatdancer.application.domain.model.Message;
 
 import java.util.List;
 
-public interface MessagesByChatUseCase {
+public interface GetMessagesByChatUseCase {
     List<Message> byChatId(Chat.ChatId chatId);
 }

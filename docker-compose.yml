@@ -39,7 +39,7 @@ services:
       ALLOW_PLAINTEXT_LISTENER: 'yes'
       KAFKA_CFG_INTER_BROKER_LISTENER_NAME: BROKER
       KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "false"
     volumes:
       - ./volumes/kafka:/bitnami/kafka
     ports:

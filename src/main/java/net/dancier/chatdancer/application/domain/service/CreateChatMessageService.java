@@ -3,8 +3,8 @@ package net.dancier.chatdancer.application.domain.service;
 import lombok.RequiredArgsConstructor;
 import net.dancier.chatdancer.application.domain.model.Chat;
 import net.dancier.chatdancer.application.domain.model.Message;
-import net.dancier.chatdancer.application.port.in.PostChatMessageCommand;
-import net.dancier.chatdancer.application.port.in.PostChatMessageUseCase;
+import net.dancier.chatdancer.application.port.in.CreateChatMessageCommand;
+import net.dancier.chatdancer.application.port.in.CreateChatMessageUseCase;
 import net.dancier.chatdancer.application.port.out.LoadChatPort;
 import net.dancier.chatdancer.application.port.out.UpdateChatPort;
 import org.slf4j.Logger;
@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class PostChatMessageService implements PostChatMessageUseCase {
-    Logger log = LoggerFactory.getLogger(PostChatMessageService.class);
+public class CreateChatMessageService implements CreateChatMessageUseCase {
+    Logger log = LoggerFactory.getLogger(CreateChatMessageService.class);
 
     private final LoadChatPort loadChatPort;
 
@@ -23,7 +23,7 @@ public class PostChatMessageService implements PostChatMessageUseCase {
 
 
     @Override
-    public void post(PostChatMessageCommand command) {
+    public void post(CreateChatMessageCommand command) {
         log.info("Posting: " + command);
         Chat chat = loadChatPort.loadChat(command.chatId());
         Message message = Message.withoutId(command.text(),command.authorId());

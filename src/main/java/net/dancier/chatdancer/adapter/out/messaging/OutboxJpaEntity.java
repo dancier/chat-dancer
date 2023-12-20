@@ -38,7 +38,8 @@ public class OutboxJpaEntity {
         NEW,
         IN_PROGRESS,
         TEMP_FAILED,
-        FINALLY_FAILED
+        FINALLY_FAILED,
+        DONE
     }
 
 }
