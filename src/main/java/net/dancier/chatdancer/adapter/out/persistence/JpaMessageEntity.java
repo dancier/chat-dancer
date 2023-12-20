@@ -12,7 +12,6 @@ import java.util.UUID;
 public class JpaMessageEntity {
 
     @Id
-    @GeneratedValue
     private UUID id;
 
     @Column(name = "chat_id")

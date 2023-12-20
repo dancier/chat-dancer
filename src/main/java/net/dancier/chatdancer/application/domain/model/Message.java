@@ -28,7 +28,7 @@ public class Message {
         String text,
         AuthorId authorId
     ) {
-        return new Message(null,
+        return new Message(new MessageId(UUID.randomUUID()),
                 text,
                 authorId,
                 LocalDateTime.now());

@@ -16,7 +16,6 @@ import java.util.UUID;
 public class ChatJpaEntity {
 
     @Id
-    @GeneratedValue
     private UUID id;
 
     @ElementCollection

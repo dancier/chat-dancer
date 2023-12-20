@@ -9,7 +9,7 @@ import net.dancier.chatdancer.application.port.in.CreateChatCommand;
 import net.dancier.chatdancer.application.port.in.CreateChatUseCase;
 import net.dancier.chatdancer.application.port.out.SendChatCreatedEventDto;
 import net.dancier.chatdancer.application.port.out.SendChatCreatedEventPort;
-import net.dancier.chatdancer.application.port.out.UpdateChatPort;
+import net.dancier.chatdancer.application.port.out.ChatPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ public class CreateChatService implements CreateChatUseCase {
 
     private final static Logger log = LoggerFactory.getLogger(CreateChatService.class);
 
-    private final UpdateChatPort updateChatPort;
+    private final ChatPort chatPort;
 
     private final SendChatCreatedEventPort sendChatCreatedEventPort;
 
@@ -35,10 +35,10 @@ public class CreateChatService implements CreateChatUseCase {
                         participantId -> chat.addParticipant(participantId)
                 );
 
-        Chat.ChatId chatId = updateChatPort.updateChat(chat);
+        chatPort.updateChat(chat);
 
         SendChatCreatedEventDto sendChatCreatedEventDto = new SendChatCreatedEventDto();
-        sendChatCreatedEventDto.setChatId(chatId.getId());
+        sendChatCreatedEventDto.setChatId(chat.getChatId().getId());
         sendChatCreatedEventDto.setParticipantIds(createChatCommand.participants());
         try {
             sendChatCreatedEventPort.send(sendChatCreatedEventDto);
@@ -46,6 +46,6 @@ public class CreateChatService implements CreateChatUseCase {
             log.error("Permanent Error: " + jpe);
             throw new ApplicationException("Unable to serialize..", jpe);
         }
-        return chatId;
+        return chat.getChatId();
     }
 }

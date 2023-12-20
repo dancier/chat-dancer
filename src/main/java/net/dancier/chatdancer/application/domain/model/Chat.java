@@ -37,7 +37,7 @@ public class Chat {
     }
 
     public static Chat withoutId(LocalDateTime createdAt) {
-        return new Chat(null, createdAt);
+        return new Chat(new ChatId(UUID.randomUUID()), createdAt);
     }
 
     public List<Message> getMessages() {
