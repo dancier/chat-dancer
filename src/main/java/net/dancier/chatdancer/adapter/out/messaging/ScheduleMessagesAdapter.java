@@ -49,6 +49,7 @@ public class ScheduleMessagesAdapter implements SendChatCreatedEventPort, SendMe
         sendMessageCreatedEventDto.setText(message.getText());
         sendMessageCreatedEventDto.setCreatedAt(OffsetDateTime.of(message.getCreatedAt(), ZoneOffset.UTC));
         sendMessageCreatedEventDto.setChatId(chat.getChatId().getId());
+        sendMessageCreatedEventDto.setAuthorId(message.getAuthorId().getValue());
         
         log.info("Scheduling Business Event for:  " +  sendMessageCreatedEventDto);
         String data = objectMapper.writeValueAsString(sendMessageCreatedEventDto);

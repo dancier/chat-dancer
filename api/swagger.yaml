@@ -9,7 +9,7 @@ paths:
   /chats:
     get:
       parameters:
-        - $ref: '#/components/parameters/dancerId'
+        - $ref: '#/components/parameters/participantId'
       summary: returns a list of all chats of a dancer. This endpoint does only return the latest message, the messages array will only be filled on fetching messages for a chat or fetching a single chat
       responses:
         '200':
@@ -20,7 +20,7 @@ paths:
                 $ref: '#/components/schemas/chatListResponse'
               example:
                 - chatId: 543
-                  dancerIds: [123, 234]
+                  participantIds: [123, 234]
                   lastActivity: "2022-10-10T18:29:48.843Z"
                   type: "GROUP"
                   lastMessage:
@@ -36,7 +36,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/error'
     post:
-      summary: Creates a new group chat
+      summary: Creates a new (group) chat
       requestBody:
         content:
           application/json:
@@ -48,13 +48,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/chatResponse'
-              example:
-                chatId: 543
-                dancerIds: [123, 234]
-                lastActivity: null
-                type: "GROUP"
-                lastMessage: null
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: the id of the generated chat
+                    example: foo
+
           headers:
             location:
               schema:
@@ -129,7 +129,7 @@ paths:
         after the last check for new messages. This endpoint is used for long polling.
         It either returns a list of new messages or an empty body after a predefined time.
       parameters:
-        - $ref: '#/components/parameters/dancerId'
+        - $ref: '#/components/parameters/participantId'
       responses:
         '200':
           description: list of new messages
@@ -150,7 +150,7 @@ paths:
         after the last check for new messages. This endpoint is used for polling.
         It either returns a list of new messages or an empty body immediately.
       parameters:
-        - $ref: '#/components/parameters/dancerId'
+        - $ref: '#/components/parameters/participantId'
       responses:
         '200':
           description: list of new messages
@@ -166,10 +166,10 @@ paths:
                 $ref: '#/components/schemas/error'
 components:
   parameters:
-    dancerId:
-      name: dancerId
+    participantId:
+      name: participantId
       in: query
-      description: Dancer ID
+      description: the id of one participant in a chat
       required: true
       schema:
         type: string
@@ -202,8 +202,6 @@ components:
           items:
             type: string
           example: [ 123, 321 ]
-    chatResponse:
-      $ref: '#/components/schemas/detailedChat'
     detailedChat:
       allOf:
         - $ref: '#/components/schemas/baseChat'
@@ -216,7 +214,7 @@ components:
         chatId:
           type: string
           example: 543
-        dancerIds:
+        participantIds:
           type: array
           description: Ids of the dancers participating in the chat
           items:
@@ -226,13 +224,6 @@ components:
           type: string
           format: date-time
           description: Datetime of the last activity from this chat
-        type:
-          $ref: '#/components/schemas/chatType'
-    chatType:
-      type: string
-      enum:
-        - GROUP
-        - DIRECT
     newMessageListResponse:
       type: object
       properties:
