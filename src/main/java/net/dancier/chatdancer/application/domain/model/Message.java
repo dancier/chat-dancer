@@ -39,11 +39,11 @@ public class Message {
     }
 
     public void addReadBy(Chat.ParticipantId participantId) {
-
+        this.readBy.add(participantId);
     }
 
     public void removeReadBy(Chat.ParticipantId participantId) {
-
+        this.readBy.remove(participantId);
     }
 
     @Value

@@ -4,12 +4,13 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
 @Table(name = "message")
 @Data
-public class JpaMessageEntity {
+public class MessageJpaEntity {
 
     @Id
     private UUID id;
@@ -23,5 +24,9 @@ public class JpaMessageEntity {
 
     private LocalDateTime createdAt;
 
+    @ElementCollection
+    @CollectionTable(name = "message_readby", joinColumns = @JoinColumn(name = "message_id"))
+    @Column(name = "participant_id")
+    private Set<String> readyBy;
 
 }

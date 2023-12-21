@@ -77,4 +77,12 @@
               RENAME topic TO type;
         </sql>
     </changeSet>
+    <changeSet id="2023-12-21-read-by-messages" author="Marc Gorzala">
+        <sql>
+            CREATE TABLE message_readby (
+            message_id UUID NOT NULL,
+            participant_id VARCHAR(256) NOT NULL
+            );
+        </sql>
+    </changeSet>
 </databaseChangeLog>

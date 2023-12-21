@@ -29,9 +29,13 @@ public class ChatMapper {
     Chat fromJpaChatEntityToChat(ChatJpaEntity chatJpaEntity) {
         Chat chat = Chat.withId(new Chat.ChatId(chatJpaEntity.getId()), chatJpaEntity.getCreatedAt());
         chatJpaEntity.getParticipants().stream().forEach(s -> chat.addParticipant(new Chat.ParticipantId(s)));
-        chatJpaEntity.getMessages().stream().forEach(jpaMessageEntity -> chat.addMessage(Message.withId(
-                        new Message.MessageId(jpaMessageEntity.getId()), jpaMessageEntity.getText(),
-                        new Message.AuthorId(jpaMessageEntity.getAuthorId())))
+        chatJpaEntity.getMessages().stream().forEach(messageJpaEntity -> {
+            Message message = Message.withId(
+                    new Message.MessageId(messageJpaEntity.getId()), messageJpaEntity.getText(),
+                    new Message.AuthorId(messageJpaEntity.getAuthorId()));
+            messageJpaEntity.getReadyBy().forEach(participantString -> message.getReadBy().add(new Chat.ParticipantId(participantString)));
+            chat.addMessage(message);
+        }
         );
         return chat;
     }
@@ -44,7 +48,7 @@ public class ChatMapper {
         chatJpaEntity.setParticipants(chat.getChatParticipants().stream().map(Chat.ParticipantId::getId).collect(Collectors.toSet()));
         chatJpaEntity.setMessages(chat.getMessages().stream()
                 .map(m -> {
-                    JpaMessageEntity jme = new JpaMessageEntity();
+                    MessageJpaEntity jme = new MessageJpaEntity();
                     if (m.getId()!=null) {
                         jme.setId(m.getId().getValue());
                     }
@@ -52,12 +56,12 @@ public class ChatMapper {
                     jme.setChatId(chat.getChatId().getId());
                     jme.setAuthorId(m.getAuthorId().getValue());
                     jme.setCreatedAt(LocalDateTime.now());
+                    jme.setReadyBy(m.getReadBy().stream().map(p -> p.getId()).collect(Collectors.toSet()));
                     return jme;
                 }
                 )
                 .collect(Collectors.toList()));
         chatJpaEntity.setCreatedAt(chat.getCreatedAt());
-        log.info("Tranformed: " + chatJpaEntity);
         return chatJpaEntity;
     }
 }

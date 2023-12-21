@@ -26,7 +26,7 @@ public class ChatJpaEntity {
     @OneToMany(cascade = CascadeType.ALL,
                 orphanRemoval = true)
     @JoinColumn(name = "chat_id")
-    private List<JpaMessageEntity> messages;
+    private List<MessageJpaEntity> messages;
 
     private LocalDateTime createdAt;
 

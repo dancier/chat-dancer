@@ -4,6 +4,7 @@ import net.dancier.chatdancer.adapter.in.web.*;
 import net.dancier.chatdancer.adapter.in.web.controller.CreateChatController;
 import net.dancier.chatdancer.adapter.in.web.controller.CreatedChatMessageDto;
 import net.dancier.chatdancer.adapter.in.web.controller.SetReadFlagRequestDto;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,6 +89,7 @@ public class ChatSystemTest extends AbstractPostgreSQLEnabledTest {
         then(chatResponseWithMessageIncluded).isNotNull();
         then(chatResponseWithMessageIncluded.getBody().getLastMessage()).isNotNull();
         then(chatResponseWithMessageIncluded.getBody().getLastActivity()).isNotNull();
+        then(chatResponseWithMessageIncluded.getBody().getLastMessage().getReadByParticipants()).contains("bar");
 
         // for 2) getting it by participant
 
@@ -102,11 +104,15 @@ public class ChatSystemTest extends AbstractPostgreSQLEnabledTest {
         then(Arrays.stream(allMessagesFromTheChatResponse.getBody()).toList().get(0).getText()).contains("World");
         then(Arrays.stream(allMessagesFromTheChatResponse.getBody()).toList().get(0).getId()).isEqualTo(idOfGeneratedChatMessageForFurtherRef);
 
-        // assert that the message has not been read by anyone
-        then(Arrays.stream(allMessagesFromTheChatResponse.getBody()).toList().get(0).getReadByParticipants()).isEmpty();
+        // assert that the message has only been read by the author, which is bar
+        then(Arrays.stream(allMessagesFromTheChatResponse.getBody()).toList().get(0).getReadByParticipants()).contains("bar");
 
-        ResponseEntity responseAfterSetTheReadFlag = whenPutReadFlagEndpointIsBeingInvoked(idOfGeneratedChatMessageForFurtherRef, "bar", Boolean.TRUE);
+        ResponseEntity responseAfterSetTheReadFlag = whenPutReadFlagEndpointIsBeingInvoked(idOfGeneratedChatMessageForFurtherRef, "foo", Boolean.TRUE);
         then(responseAfterSetTheReadFlag.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
+
+        ResponseEntity<MessageDto[]> allMessagesAfterReadFlagForFooHasBeenSetResponse = whenGetMessagesForAChatIsInvoked(chatResponseWithMessageIncluded.getBody().getChatId().toString());
+        then(Arrays.stream(allMessagesAfterReadFlagForFooHasBeenSetResponse.getBody()).toList().get(0).getReadByParticipants()).contains("foo");
+        then(Arrays.stream(allMessagesAfterReadFlagForFooHasBeenSetResponse.getBody()).toList().get(0).getReadByParticipants()).size().isEqualTo(2);
 
     }
 

@@ -9,7 +9,7 @@ import net.dancier.chatdancer.application.port.in.CreateChatCommand;
 import net.dancier.chatdancer.application.port.in.CreateChatUseCase;
 import net.dancier.chatdancer.application.port.out.SendChatCreatedEventDto;
 import net.dancier.chatdancer.application.port.out.SendChatCreatedEventPort;
-import net.dancier.chatdancer.application.port.out.ChatPort;
+import net.dancier.chatdancer.application.port.out.UpdateChatPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ public class CreateChatService implements CreateChatUseCase {
 
     private final static Logger log = LoggerFactory.getLogger(CreateChatService.class);
 
-    private final ChatPort chatPort;
+    private final UpdateChatPort updateChatPort;
 
     private final SendChatCreatedEventPort sendChatCreatedEventPort;
 
@@ -35,7 +35,7 @@ public class CreateChatService implements CreateChatUseCase {
                         participantId -> chat.addParticipant(participantId)
                 );
 
-        chatPort.updateChat(chat);
+        updateChatPort.updateChat(chat);
 
         SendChatCreatedEventDto sendChatCreatedEventDto = new SendChatCreatedEventDto();
         sendChatCreatedEventDto.setChatId(chat.getChatId().getId());
