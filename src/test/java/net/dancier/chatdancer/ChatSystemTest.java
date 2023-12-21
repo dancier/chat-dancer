@@ -3,6 +3,7 @@ package net.dancier.chatdancer;
 import net.dancier.chatdancer.adapter.in.web.*;
 import net.dancier.chatdancer.adapter.in.web.controller.CreateChatController;
 import net.dancier.chatdancer.adapter.in.web.controller.CreatedChatMessageDto;
+import net.dancier.chatdancer.adapter.in.web.controller.SetReadFlagRequestDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,6 +101,30 @@ public class ChatSystemTest extends AbstractPostgreSQLEnabledTest {
         then(allMessagesFromTheChatResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         then(Arrays.stream(allMessagesFromTheChatResponse.getBody()).toList().get(0).getText()).contains("World");
         then(Arrays.stream(allMessagesFromTheChatResponse.getBody()).toList().get(0).getId()).isEqualTo(idOfGeneratedChatMessageForFurtherRef);
+
+        // assert that the message has not been read by anyone
+        then(Arrays.stream(allMessagesFromTheChatResponse.getBody()).toList().get(0).getReadByParticipants()).isEmpty();
+
+        ResponseEntity responseAfterSetTheReadFlag = whenPutReadFlagEndpointIsBeingInvoked(idOfGeneratedChatMessageForFurtherRef, "bar", Boolean.TRUE);
+        then(responseAfterSetTheReadFlag.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
+
+    }
+
+    private ResponseEntity whenPutReadFlagEndpointIsBeingInvoked(String messageId, String participantId, Boolean read) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+
+        SetReadFlagRequestDto setReadFlagRequestDto = new SetReadFlagRequestDto();
+        setReadFlagRequestDto.setRead(Boolean.TRUE);
+
+        HttpEntity<SetReadFlagRequestDto> request = new HttpEntity<>(setReadFlagRequestDto, headers);
+
+        return testRestTemplate.exchange(
+                String.format("/messages/%s/read-by/%s", messageId,participantId),
+                HttpMethod.PUT,
+                request,
+                Object.class
+        );
     }
 
     private ResponseEntity<CreatedChatMessageDto> whenPostChatMessageEndpointIsBeingInvoked(String chatId, String text, String author) {
