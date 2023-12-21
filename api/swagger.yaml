@@ -129,6 +129,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
+  /messages/{messageId}/read-by/{participantId}:
+    put:
+      summary: set the read flag for a message
+      parameters:
+        - in : path
+          name: messageId
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: participantId
+          schema:
+            type: string
+          required: true
+      responses:
+        '204':
+          description: Change was successful
+
   /new-messages-long-polling:
     get:
       summary: |
