@@ -1,7 +1,8 @@
 package net.dancier.chatdancer;
 
 import net.dancier.chatdancer.adapter.in.web.*;
-import net.dancier.chatdancer.adapter.in.web.controller.PostChatController;
+import net.dancier.chatdancer.adapter.in.web.controller.CreateChatController;
+import net.dancier.chatdancer.adapter.in.web.controller.CreatedChatMessageDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import static org.assertj.core.api.BDDAssertions.then;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class PostChatControllerTest extends AbstractPostgreSQLEnabledTest {
+public class ChatSystemTest extends AbstractPostgreSQLEnabledTest {
 
     @Autowired
     TestRestTemplate testRestTemplate;
@@ -61,14 +62,19 @@ public class PostChatControllerTest extends AbstractPostgreSQLEnabledTest {
 
 
         // Now we post a chat message
-        ResponseEntity createdChatMessageResponse = whenPostChatMessageEndpointIsBeingInvoked(
+        ResponseEntity<CreatedChatMessageDto> createdChatMessageResponse = whenPostChatMessageEndpointIsBeingInvoked(
                 getChatResponse.getBody().getChatId().toString(),
                 "Hallo World",
                 "bar"
                 );
         then(createdChatMessageResponse.getStatusCode())
                 .isEqualTo(HttpStatus.CREATED);
-        then(createdChatMessageResponse.getBody()).isNull();
+        then(createdChatMessageResponse.getBody()).isNotNull();
+
+        String idOfGeneratedChatMessageForFurtherRef = createdChatMessageResponse.getBody().getId();
+        then(idOfGeneratedChatMessageForFurtherRef).isNotNull();
+        then(createdChatMessageResponse.getHeaders().getLocation().toString()).endsWith(idOfGeneratedChatMessageForFurtherRef);
+
 
         // now we can assert that
         // 1) the message will pop up in the chat overview via the get chat endpoint
@@ -93,10 +99,10 @@ public class PostChatControllerTest extends AbstractPostgreSQLEnabledTest {
         then(allMessagesFromTheChatResponse).isNotNull();
         then(allMessagesFromTheChatResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         then(Arrays.stream(allMessagesFromTheChatResponse.getBody()).toList().get(0).getText()).contains("World");
-
+        then(Arrays.stream(allMessagesFromTheChatResponse.getBody()).toList().get(0).getId()).isEqualTo(idOfGeneratedChatMessageForFurtherRef);
     }
 
-    private ResponseEntity whenPostChatMessageEndpointIsBeingInvoked(String chatId, String text, String author) {
+    private ResponseEntity<CreatedChatMessageDto> whenPostChatMessageEndpointIsBeingInvoked(String chatId, String text, String author) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         PostChatMessageRequestDto postChatMessageRequestDto = PostChatMessageRequestDto
@@ -110,7 +116,7 @@ public class PostChatControllerTest extends AbstractPostgreSQLEnabledTest {
                 String.format("/chats/%s/messages", chatId),
                 HttpMethod.POST,
                 request,
-                Object.class
+                CreatedChatMessageDto.class
         );
     }
 
@@ -146,7 +152,7 @@ public class PostChatControllerTest extends AbstractPostgreSQLEnabledTest {
         headers.add("Content-Type", "application/json");
         HttpEntity<PostChatRequestDto> request = new HttpEntity<>(postChatDto, headers);
         return testRestTemplate.exchange(
-                PostChatController.CREATE_CHAT_ENDPOINT,
+                CreateChatController.CREATE_CHAT_ENDPOINT,
                 HttpMethod.POST,
                 request,
                 CreatedChatDto.class

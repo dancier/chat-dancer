@@ -27,7 +27,7 @@ public class CreateChatMessageService implements CreateChatMessageUseCase {
     private final SendMessageCreatedEventPort sendMessageCreatedEventPort;
 
     @Override
-    public void create(CreateChatMessageCommand command) {
+    public Message.MessageId create(CreateChatMessageCommand command) {
         log.info("Posting: " + command);
         Chat chat = getChatPort.get(command.chatId());
         Message message = Message.withoutId(command.text(),command.authorId());
@@ -40,5 +40,6 @@ public class CreateChatMessageService implements CreateChatMessageUseCase {
             log.error("Unable to process " + command);
             throw new ApplicationException("Unable to process...", jpe);
         }
+        return message.getId();
     }
 }

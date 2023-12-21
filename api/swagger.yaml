@@ -116,6 +116,13 @@ paths:
       responses:
         '201':
           description: "message created"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
         default:
           description: Unexpected error
           content:

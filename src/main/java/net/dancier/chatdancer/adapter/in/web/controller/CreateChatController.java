@@ -20,9 +20,9 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
-public class PostChatController {
+public class CreateChatController {
 
-    public final Logger log = LoggerFactory.getLogger(PostChatController.class);
+    public final Logger log = LoggerFactory.getLogger(CreateChatController.class);
     public final static String CREATE_CHAT_ENDPOINT = "/chats";
     public final static String GET_CHAT_URI_PATTERN = "/chats/{0}";
 

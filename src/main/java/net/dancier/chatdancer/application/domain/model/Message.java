@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.Value;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -21,6 +23,8 @@ public class Message {
 
     private final LocalDateTime createdAt;
 
+    private final Set<Chat.ParticipantId> readBy = new HashSet<>();
+
     public static Message withId(MessageId messageId, String text, AuthorId authorId) {
         return new Message(messageId, text, authorId, LocalDateTime.now());
     }
@@ -33,6 +37,15 @@ public class Message {
                 authorId,
                 LocalDateTime.now());
     }
+
+    public void addReadBy(Chat.ParticipantId participantId) {
+
+    }
+
+    public void removeReadBy(Chat.ParticipantId participantId) {
+
+    }
+
     @Value
     public static class MessageId {
         private UUID value;
