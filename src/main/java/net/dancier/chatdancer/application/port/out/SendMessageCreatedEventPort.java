@@ -6,6 +6,6 @@ import net.dancier.chatdancer.application.domain.model.Message;
 
 public interface SendMessageCreatedEventPort {
 
-    public void send(Chat chat, Message message) throws JsonProcessingException;
+    void send(Chat chat, Message message) throws JsonProcessingException;
 
 }

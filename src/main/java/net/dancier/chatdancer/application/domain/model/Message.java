@@ -42,10 +42,6 @@ public class Message {
         this.readBy.add(participantId);
     }
 
-    public void removeReadBy(Chat.ParticipantId participantId) {
-        this.readBy.remove(participantId);
-    }
-
     @Value
     public static class MessageId {
         private UUID value;

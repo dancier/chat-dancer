@@ -5,9 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import net.dancier.chatdancer.application.domain.model.Chat;
 import net.dancier.chatdancer.application.domain.model.Message;
-import net.dancier.chatdancer.application.port.out.SendChatCreatedEventDto;
-import net.dancier.chatdancer.application.port.out.SendChatCreatedEventPort;
-import net.dancier.chatdancer.application.port.out.SendMessageCreatedEventPort;
+import net.dancier.chatdancer.application.port.out.*;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
@@ -17,11 +15,13 @@ import java.time.ZoneOffset;
 
 @RequiredArgsConstructor
 @Component
-public class ScheduleMessagesAdapter implements SendChatCreatedEventPort, SendMessageCreatedEventPort {
+public class ScheduleMessagesAdapter implements
+        SendChatCreatedEventPort,
+        SendMessageCreatedEventPort,
+        SendReadFlagUpdatedEventPort
+{
     private static final Logger log = LoggerFactory.getLogger(ScheduleMessagesAdapter.class);
-    private static final String CHAT_CREATED_SOURCE = "http://chat-dancer.dancier.net/chat-created";
-
-    private static final String MESSAGE_CREATED_SOURCE = "http://chat-dancer.dancier.net/message-created";
+    private static final String SOURCE = "http://chat-dancer.dancier.net";
 
     private final OutboxJpaRepository outboxJpaRepository;
 
@@ -37,7 +37,7 @@ public class ScheduleMessagesAdapter implements SendChatCreatedEventPort, SendMe
         outboxJpaEntity.setCreatedAt(OffsetDateTime.now());
         outboxJpaEntity.setStatus(OutboxJpaEntity.STATUS.NEW);
         outboxJpaEntity.setKey(sendChatCreatedEventDto.getChatId().toString());
-        outboxJpaEntity.setSource(CHAT_CREATED_SOURCE);
+        outboxJpaEntity.setSource(SOURCE);
         outboxJpaRepository.save(outboxJpaEntity);
     }
 
@@ -59,7 +59,20 @@ public class ScheduleMessagesAdapter implements SendChatCreatedEventPort, SendMe
         outboxJpaEntity.setType(TopicNames.MESSAGE_POSTED);
         outboxJpaEntity.setCreatedAt(OffsetDateTime.now());
         outboxJpaEntity.setStatus(OutboxJpaEntity.STATUS.NEW);
-        outboxJpaEntity.setSource(MESSAGE_CREATED_SOURCE);
+        outboxJpaEntity.setSource(SOURCE);
+        outboxJpaRepository.save(outboxJpaEntity);
+    }
+
+    @Override
+    public void send(SendReadFlagUpdatedEventDto sendReadFlagUpdatedEventDto) throws JsonProcessingException {
+        String data = objectMapper.writeValueAsString(sendReadFlagUpdatedEventDto);
+        OutboxJpaEntity outboxJpaEntity = new OutboxJpaEntity();
+        outboxJpaEntity.setKey(sendReadFlagUpdatedEventDto.getReaderId());
+        outboxJpaEntity.setData(data);
+        outboxJpaEntity.setType(TopicNames.MESSAGE_READ);
+        outboxJpaEntity.setCreatedAt(OffsetDateTime.now());
+        outboxJpaEntity.setStatus(OutboxJpaEntity.STATUS.NEW);
+        outboxJpaEntity.setSource(SOURCE);
         outboxJpaRepository.save(outboxJpaEntity);
     }
 }
