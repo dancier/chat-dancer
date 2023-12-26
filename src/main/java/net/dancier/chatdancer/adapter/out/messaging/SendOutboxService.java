@@ -28,7 +28,7 @@ public class SendOutboxService {
                         .withId(UUID.randomUUID().toString())
                         .withSource(URI.create(entity.getSource()))
                         .withType(entity.getType())
-                        .withData(objectMapper.writeValueAsBytes(entity.getData()))
+                        .withData(entity.getData().getBytes())
                 .build();
         kafkaTemplate.send(entity.getType(),
                 entity.getKey(),
