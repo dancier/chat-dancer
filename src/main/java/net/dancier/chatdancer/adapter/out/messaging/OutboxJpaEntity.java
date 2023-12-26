@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -28,7 +29,7 @@ public class OutboxJpaEntity {
     @JdbcTypeCode(SqlTypes.JSON)
     private String data;
 
-    private OffsetDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
     private STATUS status;

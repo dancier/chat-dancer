@@ -5,6 +5,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,8 @@ public class SendMessagesJob {
 
     private final SendOutboxService sendOutboxService;
 
+    private final KafkaTemplate kafkaTemplate;
+
     @Transactional
     @Scheduled(fixedRate = 2000)
     public void sendMessages() throws UnsupportedEncodingException, JsonProcessingException {
@@ -28,6 +31,7 @@ public class SendMessagesJob {
         for(OutboxJpaEntity entity: itemsToBeProcesses) {
             sendMessage(entity);
         }
+        kafkaTemplate.flush();
     }
 
     public void sendMessage(OutboxJpaEntity entity) throws UnsupportedEncodingException, JsonProcessingException {

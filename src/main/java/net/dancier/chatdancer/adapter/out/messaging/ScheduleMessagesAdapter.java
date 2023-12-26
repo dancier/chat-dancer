@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
@@ -34,7 +35,7 @@ public class ScheduleMessagesAdapter implements
         OutboxJpaEntity outboxJpaEntity = new OutboxJpaEntity();
         outboxJpaEntity.setData(data);
         outboxJpaEntity.setType(TopicNames.CHAT_CREATED);
-        outboxJpaEntity.setCreatedAt(OffsetDateTime.now());
+        outboxJpaEntity.setCreatedAt(LocalDateTime.now());
         outboxJpaEntity.setStatus(OutboxJpaEntity.STATUS.NEW);
         outboxJpaEntity.setKey(sendChatCreatedEventDto.getChatId().toString());
         outboxJpaEntity.setSource(SOURCE);
@@ -57,7 +58,7 @@ public class ScheduleMessagesAdapter implements
         outboxJpaEntity.setKey(sendMessageCreatedEventDto.getChatId().toString());
         outboxJpaEntity.setData(data);
         outboxJpaEntity.setType(TopicNames.MESSAGE_POSTED);
-        outboxJpaEntity.setCreatedAt(OffsetDateTime.now());
+        outboxJpaEntity.setCreatedAt(LocalDateTime.now());
         outboxJpaEntity.setStatus(OutboxJpaEntity.STATUS.NEW);
         outboxJpaEntity.setSource(SOURCE);
         outboxJpaRepository.save(outboxJpaEntity);
@@ -70,7 +71,7 @@ public class ScheduleMessagesAdapter implements
         outboxJpaEntity.setKey(sendReadFlagUpdatedEventDto.getReaderId());
         outboxJpaEntity.setData(data);
         outboxJpaEntity.setType(TopicNames.MESSAGE_READ);
-        outboxJpaEntity.setCreatedAt(OffsetDateTime.now());
+        outboxJpaEntity.setCreatedAt(LocalDateTime.now());
         outboxJpaEntity.setStatus(OutboxJpaEntity.STATUS.NEW);
         outboxJpaEntity.setSource(SOURCE);
         outboxJpaRepository.save(outboxJpaEntity);

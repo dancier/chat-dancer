@@ -30,7 +30,9 @@ public class SendOutboxService {
                         .withType(entity.getType())
                         .withData(objectMapper.writeValueAsBytes(entity.getData()))
                 .build();
-        kafkaTemplate.send(entity.getType(),entity.getKey(), cloudEvent);
+        kafkaTemplate.send(entity.getType(),
+                entity.getKey(),
+                cloudEvent);
     }
 
 }
