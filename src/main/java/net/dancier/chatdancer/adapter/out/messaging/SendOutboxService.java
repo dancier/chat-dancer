@@ -21,8 +21,6 @@ public class SendOutboxService {
 
     private final KafkaTemplate kafkaTemplate;
 
-    private final ObjectMapper objectMapper;
-
     public void send(OutboxJpaEntity entity) throws JsonProcessingException {
         CloudEvent cloudEvent = CloudEventBuilder.v1()
                         .withId(UUID.randomUUID().toString())

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -51,6 +52,7 @@ public class ScheduleMessagesAdapter implements
         sendMessageCreatedEventDto.setCreatedAt(OffsetDateTime.of(message.getCreatedAt(), ZoneOffset.UTC));
         sendMessageCreatedEventDto.setChatId(chat.getChatId().getId());
         sendMessageCreatedEventDto.setAuthorId(message.getAuthorId().getValue());
+        sendMessageCreatedEventDto.setParticipantIds(chat.getChatParticipants().stream().map(Chat.ParticipantId::getId).collect(Collectors.toList()));
         
         log.info("Scheduling Business Event for:  " +  sendMessageCreatedEventDto);
         String data = objectMapper.writeValueAsString(sendMessageCreatedEventDto);
