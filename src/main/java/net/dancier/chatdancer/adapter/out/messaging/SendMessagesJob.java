@@ -36,9 +36,14 @@ public class SendMessagesJob {
     @Transactional
     public void sendMessage(OutboxJpaEntity entity) throws JsonProcessingException {
         log.info("sending: " + entity);
-        sendOutboxService.send(entity);
-        entity.setStatus(OutboxJpaEntity.STATUS.DONE);
-        log.info("success: " + entity);
+        try {
+            sendOutboxService.send(entity);
+            entity.setStatus(OutboxJpaEntity.STATUS.DONE);
+            log.info("success: " + entity);
+        } catch (RuntimeException runtimeException) {
+            entity.setStatus(OutboxJpaEntity.STATUS.TEMP_FAILED);
+            log.error("failure:" + entity);
+        }
         outboxJpaRepository.save(entity);
     }
 

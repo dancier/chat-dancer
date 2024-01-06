@@ -16,7 +16,7 @@ public interface OutboxJpaRepository extends JpaRepository<OutboxJpaEntity, UUID
                     			SELECT id
                     			  FROM outbox
                     			 WHERE status = 'NEW'
-                    			 LIMIT 1
+                    			 LIMIT 100
                     		FOR UPDATE
                         )
                     	RETURNING *;                    """,
