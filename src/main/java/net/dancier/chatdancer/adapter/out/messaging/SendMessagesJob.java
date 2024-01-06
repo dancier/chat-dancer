@@ -24,9 +24,8 @@ public class SendMessagesJob {
 
     private final KafkaTemplate kafkaTemplate;
 
-    @Transactional
     @Scheduled(fixedRate = 2000)
-    public void sendMessages() throws UnsupportedEncodingException, JsonProcessingException {
+    public void sendMessages() throws JsonProcessingException {
         Collection<OutboxJpaEntity> itemsToBeProcesses = outboxJpaRepository.lockAndList();
         for(OutboxJpaEntity entity: itemsToBeProcesses) {
             sendMessage(entity);
@@ -34,10 +33,12 @@ public class SendMessagesJob {
         kafkaTemplate.flush();
     }
 
-    public void sendMessage(OutboxJpaEntity entity) throws UnsupportedEncodingException, JsonProcessingException {
+    @Transactional
+    public void sendMessage(OutboxJpaEntity entity) throws JsonProcessingException {
         log.info("sending: " + entity);
-        entity.setStatus(OutboxJpaEntity.STATUS.DONE);
         sendOutboxService.send(entity);
+        entity.setStatus(OutboxJpaEntity.STATUS.DONE);
+        log.info("success: " + entity);
         outboxJpaRepository.save(entity);
     }
 
