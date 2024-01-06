@@ -1,11 +1,10 @@
 package net.dancier.chatdancer.adapter.in.web.controller;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
 import net.dancier.chatdancer.adapter.in.web.MessageDto;
 import net.dancier.chatdancer.application.domain.model.Chat;
 import net.dancier.chatdancer.application.domain.model.Message;
-import net.dancier.chatdancer.application.port.in.GetMessagesByChatUseCase;
+import net.dancier.chatdancer.application.port.in.GetMessagesByChatQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +22,12 @@ public class GetMessagesController {
 
     private static final Logger log = LoggerFactory.getLogger(GetMessagesController.class);
 
-    private final GetMessagesByChatUseCase getMessagesByChatUseCase;
+    private final GetMessagesByChatQuery getMessagesByChatQuery;
 
     @GetMapping("/chats/{chatId}/messages")
     public ResponseEntity<List<MessageDto>> getMessages(@PathVariable UUID chatId) {
         log.info("Getting all Messages");
-        List<Message> messages = getMessagesByChatUseCase.byChatId(new Chat.ChatId(chatId));
+        List<Message> messages = getMessagesByChatQuery.byChatId(new Chat.ChatId(chatId));
         List<MessageDto> messageDtos = messages.stream().map(m -> MessageDto.of(m)).collect(Collectors.toList());
         return ResponseEntity.ok(messageDtos);
     }

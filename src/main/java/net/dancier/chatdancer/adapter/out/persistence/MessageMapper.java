@@ -10,11 +10,12 @@ public class MessageMapper {
 
     public static MessageAndChatIdDto jpaEntityToMessage(MessageJpaEntity messageJpaEntity) {
         Message message =
-                Message.withId(
-                        new Message.MessageId(messageJpaEntity.getId()),
-                        messageJpaEntity.getText(),
-                        new Message.AuthorId(messageJpaEntity.getAuthorId())
-                );
+            Message.withId(
+                    new Message.MessageId(messageJpaEntity.getId()),
+                    messageJpaEntity.getText(),
+                    new Message.AuthorId(messageJpaEntity.getAuthorId()),
+                    messageJpaEntity.getCreatedAt()
+            );
         messageJpaEntity.getReadyBy().forEach(rbs -> message.addReadBy(new Chat.ParticipantId(rbs)));
         MessageAndChatIdDto messageAndChatIdDto = new MessageAndChatIdDto();
         messageAndChatIdDto.setMessage(message);

@@ -6,6 +6,5 @@ import net.dancier.chatdancer.application.domain.model.Message;
 import java.util.List;
 
 public interface GetMessagesByChatQuery {
-    List<Message> messagesByChat(Chat.ChatId chatId);
-
+    List<Message> byChatId(Chat.ChatId chatId);
 }

@@ -31,8 +31,11 @@ public class ChatMapper {
         chatJpaEntity.getParticipants().stream().forEach(s -> chat.addParticipant(new Chat.ParticipantId(s)));
         chatJpaEntity.getMessages().stream().forEach(messageJpaEntity -> {
             Message message = Message.withId(
-                    new Message.MessageId(messageJpaEntity.getId()), messageJpaEntity.getText(),
-                    new Message.AuthorId(messageJpaEntity.getAuthorId()));
+                    new Message.MessageId(messageJpaEntity.getId()),
+                    messageJpaEntity.getText(),
+                    new Message.AuthorId(messageJpaEntity.getAuthorId()),
+                    messageJpaEntity.getCreatedAt()
+                    );
             messageJpaEntity.getReadyBy().forEach(participantString -> message.getReadBy().add(new Chat.ParticipantId(participantString)));
             chat.addMessage(message);
         }

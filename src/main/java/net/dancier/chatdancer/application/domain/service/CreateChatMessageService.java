@@ -14,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 
 @RequiredArgsConstructor
 @Component
@@ -30,7 +32,11 @@ public class CreateChatMessageService implements CreateChatMessageUseCase {
     public Message.MessageId create(CreateChatMessageCommand command) {
         log.info("Posting: " + command);
         Chat chat = getChatPort.get(command.chatId());
-        Message message = Message.withoutId(command.text(),command.authorId());
+        Message message = Message.withoutId(
+                command.text(),
+                command.authorId(),
+                LocalDateTime.now()
+                );
         message.getReadBy().add(new Chat.ParticipantId(command.authorId().getValue()));
         chat.addMessage(message);
         updateChatPort.updateChat(chat);

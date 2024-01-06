@@ -25,17 +25,26 @@ public class Message {
 
     private final Set<Chat.ParticipantId> readBy = new HashSet<>();
 
-    public static Message withId(MessageId messageId, String text, AuthorId authorId) {
-        return new Message(messageId, text, authorId, LocalDateTime.now());
+    public static Message withId(
+            MessageId messageId,
+            String text,
+            AuthorId authorId,
+            LocalDateTime createdAt) {
+        return new Message(
+                messageId,
+                text,
+                authorId,
+                createdAt);
     }
     public static Message withoutId(
         String text,
-        AuthorId authorId
+        AuthorId authorId,
+        LocalDateTime createdAt
     ) {
         return new Message(new MessageId(UUID.randomUUID()),
                 text,
                 authorId,
-                LocalDateTime.now());
+                createdAt);
     }
 
     public void addReadBy(Chat.ParticipantId participantId) {
