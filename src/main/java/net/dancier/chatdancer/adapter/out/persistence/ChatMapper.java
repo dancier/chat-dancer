@@ -58,7 +58,7 @@ public class ChatMapper {
                     jme.setText(m.getText());
                     jme.setChatId(chat.getChatId().getId());
                     jme.setAuthorId(m.getAuthorId().getValue());
-                    jme.setCreatedAt(LocalDateTime.now());
+                    jme.setCreatedAt(m.getCreatedAt());
                     jme.setReadyBy(m.getReadBy().stream().map(p -> p.getId()).collect(Collectors.toSet()));
                     return jme;
                 }
