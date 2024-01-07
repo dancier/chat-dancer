@@ -17,7 +17,16 @@ import java.util.stream.Collectors;
 @Builder
 public class GetChatResponseDto {
     public static GetChatResponseDto of(Chat chat) {
-        Optional<Message> optionalLastMessage = chat.getMessages().stream().reduce((first, second) -> second);
+        Optional<Message> optionalLastMessage = chat.getMessages().stream().reduce((first, second) ->
+                {
+                    if (first.getCreatedAt().isAfter(second.getCreatedAt())) {
+                        return first;
+                    }
+                    else {
+                        return second;
+                    }
+                }
+        );
         return GetChatResponseDto.builder()
                 .chatId(chat.getChatId().getId())
                 .participantIds(
@@ -40,6 +49,5 @@ public class GetChatResponseDto {
     Set<String> participantIds;
     OffsetDateTime lastActivity;
     MessageDto lastMessage;
-    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     OffsetDateTime createdAt;
 }
